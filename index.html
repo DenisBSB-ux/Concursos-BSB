@@ -128,8 +128,8 @@
                             <td class="py-2 px-3">
                                 <div class="font-semibold text-slate-900 dark:text-slate-200">Analista Administrativo</div>
                                 <div class="mt-1">
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-500 text-slate-950 font-black text-[10px] rounded-md shadow-sm">
-                                        ⚠️ Simulados disponíveis (PDF + Gabarito Grátis)
+                                    <span data-simulado-data="2026-08-30T08:00:00" class="simulado-badge inline-flex items-center gap-1 px-2 py-0.5 bg-amber-500 text-slate-950 font-black text-[10px] rounded-md shadow-sm animate-pulse">
+                                        ⚠️ Simulado: 30/08/2026 às 08:00h
                                     </span>
                                 </div>
                             </td>
@@ -176,11 +176,7 @@
                             </td>
                             <td class="py-2 px-3">
                                 <div class="font-semibold text-slate-900 dark:text-slate-200">EDAS / TDAS</div>
-                                <div class="mt-1">
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-500 text-slate-950 font-black text-[10px] rounded-md shadow-sm animate-pulse">
-                                        ⚠️ 5º Simulado Inédito: 30/08/2026 às 08:00h
-                                    </span>
-                                </div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">Simulados oficiais aplicados em Julho/2026</div>
                             </td>
                             <td class="py-2 px-3 font-bold">1.197 + CR <span class="block text-[9px] font-normal text-slate-400">Estatutário</span></td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 6.071,09</td>
@@ -606,7 +602,7 @@
 
         const dadosManuais = {
             'TCDF': { titulo: 'TCDF 2026', status: 'Edital nº 1/2026 publicado para Analista Administrativo de Controle Externo.', historico: 'Inscrições: 26/08 a 17/09/2026. Aplicação das Provas em 22/11/2026.', link: 'https://www.cebraspe.org.br/concursos/tc_df_26_analista', simulados: '• <span class="font-bold text-slate-900 dark:text-white">Gran Concursos:</span> 1º Simulado TCDF (Analista) — PDF + Gabarito [Gratuito] (<a href="https://concursos.grancursosonline.com.br/tcdf-1o-simulado-analista-administrativo-de-controle-externo-area-de-gestao-servicos-tecnico-administrativos-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar PDF Grátis</a>)<br>• <span class="font-bold text-slate-900 dark:text-white">Estratégia Concursos:</span> Simulado Especial TCDF Cebraspe [Gratuito] (<a href="https://www.estrategiaconcursos.com.br/curso/tcdf-analista-administrativo-de-controle-externo-servicos-tecnico-administrativos-anace-rodadas-avancadas-de-simulados-2026-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Acessar Simulado Grátis</a>)<br>• <span class="font-bold text-slate-900 dark:text-white">JC Concursos:</span> Bateria de Questões Cebraspe TCDF [Gratuito] (<a href="https://jcconcursos.com.br/simulados/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Treinar Grátis</a>)' },
-            'SEDES_DF': { titulo: 'SEDES-DF', status: 'Concurso unificado para EDAS e TDAS (14 especialidades). Inscrições já encerradas.', historico: 'Realização das Provas Objetivas em 06/09/2026.', link: 'https://www.quadrix.org.br/', simulados: '• <span class="font-bold text-slate-900 dark:text-white">Gran Concursos:</span> 3º Simulado SEDES-DF (TDAS/EDAS) [Gratuito] (<a href="https://concursos.grancursosonline.com.br/sedes-df-3-simulado-gratuito-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar PDF Grátis</a>)<br>• <span class="font-bold text-slate-900 dark:text-white">Estratégia Concursos:</span> Simulado Especial Reta Final SEDES-DF [Gratuito] (<a href="https://www.estrategiaconcursos.com.br/blog/simulado-especial-concurso-sedes-df-2026/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Acessar Simulado Grátis</a>)' },
+            'SEDES_DF': { titulo: 'SEDES-DF', status: 'Concurso unificado para EDAS e TDAS (14 especialidades). Inscrições já encerradas.', historico: 'Realização das Provas Objetivas em 06/09/2026.', link: 'https://www.quadrix.org.br/', simulados: '• <span class="font-bold text-slate-900 dark:text-white">Gran Concursos:</span> Simulados Oficiais Aplicados em Julho/2026 — PDF + Gabarito [Gratuito] (<a href="https://concursos.grancursosonline.com.br/sedes-df-3-simulado-gratuito-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar Cadernos de Julho</a>)<br>• <span class="font-bold text-slate-900 dark:text-white">Estratégia Concursos:</span> Rodadas de Simulados Aplicadas em Julho/2026 [Gratuito] (<a href="https://www.estrategiaconcursos.com.br/blog/simulado-especial-concurso-sedes-df-2026/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar PDF Grátis</a>)' },
             'ANPD': { titulo: 'ANPD', status: 'Concurso autorizado (Portaria MGI nº 5.092) para 50 vagas de Especialista em Regulação.', historico: 'Edital aguardado para o fim de 2026.', link: 'https://www.gov.br/' },
             'COFEN_TI': { titulo: 'COFEN — TI', status: 'Vagas para Analista de TI e Suporte Técnico na Sede.', historico: 'Edital previsto até 15/09/2026.', link: 'https://www.cofen.gov.br/' },
             'COFEN_GERAL': { titulo: 'COFEN — Geral', status: 'Cargos de Analista Técnico e Gestão de Pessoas.', historico: 'Edital previsto até 15/09/2026.', link: 'https://www.cofen.gov.br/' },
@@ -751,6 +747,28 @@
         }
 
         window.onclick = e => { if (e.target === document.getElementById('modal')) fecharModal(); };
+        
+        // =========================================================================
+        // VERIFICADOR AUTOMÁTICO DE SIMULADOS E PROVAS JÁ APLICADAS
+        // =========================================================================
+        function verificarDatasAplicadas() {
+            const agora = new Date();
+            
+            // Verifica Badges de Simulados com data programada
+            document.querySelectorAll('[data-simulado-data]').forEach(badge => {
+                const dataStr = badge.getAttribute('data-simulado-data');
+                const dataEvento = new Date(dataStr);
+                
+                if (agora > dataEvento) {
+                    badge.innerHTML = '✅ Simulado: Já aplicado';
+                    badge.className = 'inline-flex items-center gap-1 px-2 py-0.5 bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-bold text-[10px] rounded-md shadow-sm';
+                }
+            });
+        }
+        
+        // Executa ao carregar a página
+        verificarDatasAplicadas();
+
         window.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
     </script>
 </body>

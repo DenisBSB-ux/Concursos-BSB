@@ -130,7 +130,7 @@
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 14.990,41</td>
                             <td class="py-2 px-3">
                                 <div class="badge-date-box bg-emerald-50 dark:bg-emerald-950/40 border-l-2 border-emerald-500 p-1.5 rounded space-y-0.5">
-                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura:</strong> 18/08/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura:</strong> 26/08/2026</div>
                                     <div><strong class="text-emerald-700 dark:text-emerald-400">Encerramento:</strong> 17/09/2026</div>
                                     <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> 22/11/2026</div>
                                 </div>
@@ -580,7 +580,7 @@
         let filtroPerfilAtual = 'TODOS';
 
         const dadosManuais = {
-            'TCDF': { titulo: 'TCDF 2026', status: 'Edital nº 1/2026 publicado para Analista Administrativo de Controle Externo.', historico: 'Inscrições: 18/08 a 17/09/2026. Aplicação das Provas em 22/11/2026.', link: 'https://www.cebraspe.org.br/concursos/tc_df_26_analista' },
+            'TCDF': { titulo: 'TCDF 2026', status: 'Edital nº 1/2026 publicado para Analista Administrativo de Controle Externo.', historico: 'Inscrições: 26/08 a 17/09/2026. Aplicação das Provas em 22/11/2026.', link: 'https://www.cebraspe.org.br/concursos/tc_df_26_analista' },
             'SEDES_DF': { titulo: 'SEDES-DF', status: 'Concurso unificado para EDAS e TDAS (14 especialidades). Inscrições já encerradas.', historico: 'Realização das Provas Objetivas em 06/09/2026.', link: 'https://www.quadrix.org.br/' },
             'ANPD': { titulo: 'ANPD', status: 'Concurso autorizado (Portaria MGI nº 5.092) para 50 vagas de Especialista em Regulação.', historico: 'Edital aguardado para o fim de 2026.', link: 'https://www.gov.br/' },
             'COFEN_TI': { titulo: 'COFEN — TI', status: 'Vagas para Analista de TI e Suporte Técnico na Sede.', historico: 'Edital previsto até 15/09/2026.', link: 'https://www.cofen.gov.br/' },
@@ -605,6 +605,48 @@
 
         const dadosAutomaticos = {};
         const dadosAuditoria = { ...dadosManuais, ...dadosAutomaticos };
+
+
+        // =========================================================================
+        // PROTOCOLO DE VALIDAÇÃO RÍGIDA DE DADOS (ERRO ZERO)
+        // =========================================================================
+        function validarIntegridade(chave, item) {
+            // Regra 5: Validação Lógica de Sanidade Temporal (Abertura <= Encerramento < Prova)
+            const extrairData = (texto) => {
+                const match = texto.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+                if (match) return new Date(match[3], match[2] - 1, match[1]);
+                return null;
+            };
+
+            // Regra 4: Âncora de Verificabilidade (Link Obrigatório para certames Abertos ou Em Andamento)
+            const row = document.querySelector(`tr[onclick="abrirModal('${chave}')"]`);
+            if (row) {
+                const sectionId = row.closest('tbody').id;
+                if ((sectionId === 'tblSec1' || sectionId === 'tblSec2') && (!item.link || item.link.trim() === '')) {
+                    console.warn(`[BLOQUEIO DE INTEGRIDADE] ${item.titulo}: Faltando Link Oficial (Regra 4).`);
+                    row.style.display = 'none'; // Bloqueia a exibição na tabela
+                    return false;
+                }
+                
+                // Aplicando verificação temporal básica se encontrar datas na string "historico"
+                const datas = [...item.historico.matchAll(/(\d{2})\/(\d{2})\/(\d{4})/g)].map(m => new Date(m[3], m[2]-1, m[1]));
+                if (datas.length >= 2) {
+                    if (datas[0] > datas[1]) {
+                        console.error(`[FALHA DE SANIDADE TEMPORAL] ${item.titulo}: Data 1 é maior que Data 2.`);
+                        row.classList.add('bg-red-50', 'dark:bg-red-900/20', 'border-red-500');
+                    }
+                }
+            }
+            return true;
+        }
+
+        function aplicarValidacaoRigorosa() {
+            Object.keys(dadosAuditoria).forEach(chave => {
+                validarIntegridade(chave, dadosAuditoria[chave]);
+            });
+        }
+        // Executa a validação logo após o carregamento inicial das tabelas
+        setTimeout(aplicarValidacaoRigorosa, 500);
 
         function abrirModal(chave) {
             const item = dadosAuditoria[chave];

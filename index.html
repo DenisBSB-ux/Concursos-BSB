@@ -1,177 +1,183 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- GATILHO DE ATUALIZAÇÃO AUTOMÁTICA (600 segundos = 10 minutos) -->
     <meta http-equiv="refresh" content="600">
-    
     <title>Monitor de Concursos Públicos — Brasília/DF</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.2s, color 0.2s; }
         .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .modal-backdrop { background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px); }
-        .badge-proxima-data { background-color: #f1f5f9; border-left: 3px solid #3b82f6; padding: 4px 8px; border-radius: 4px; display: inline-block; }
+        .modal-backdrop { backdrop-filter: blur(4px); }
+        .badge-date-box { font-size: 10px; line-height: 1.25; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-950 dark:text-slate-100 p-2 md:p-4">
 
-    <div class="max-w-7xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-3">
 
-        <!-- CABEÇALHO DA APLICAÇÃO -->
-        <header class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-                <div class="flex flex-wrap items-center gap-2 mb-2">
-                    <span class="px-2.5 py-0.5 text-[11px] font-bold bg-slate-900 text-white rounded-full">AUDITORIA MINUCIOSA</span>
-                    <span class="px-2.5 py-0.5 text-[11px] font-bold bg-emerald-100 text-emerald-800 rounded-full">📍 DF & FEDERAIS</span>
+        <!-- CABEÇALHO COMPACTO + TEMA CLARO/ESCURO -->
+        <header class="bg-white dark:bg-slate-900 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div>
+                    <div class="flex items-center gap-2 mb-0.5">
+                        <span class="px-2 py-0.2 text-[10px] font-extrabold bg-slate-900 text-white dark:bg-blue-600 rounded-full">AUDITORIA DF</span>
+                        <span class="px-2 py-0.2 text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 rounded-full">📍 DF & FEDERAIS</span>
+                    </div>
+                    <h1 class="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white">Monitor de Concursos — Brasília/DF</h1>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Monitor de Concursos — Brasília/DF</h1>
-                <p class="text-slate-500 text-xs sm:text-sm mt-1">
-                    Mapeamento estratégico de <strong>21 oportunidades</strong>. Foco total em <strong>Próximas Datas e Fases</strong>.
-                </p>
             </div>
 
-            <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-xl text-left md:text-right shrink-0 min-w-[210px]">
-                <div class="text-[11px] font-bold uppercase text-slate-400 tracking-wider">Última Atualização</div>
-                <!-- CAMPO DINÂMICO DE DATA E HORA -->
-                <div class="text-sm font-extrabold text-slate-800" id="dataAtualizacao">Calculando...</div>
-                <div class="text-[11px] font-semibold text-emerald-600 flex items-center md:justify-end gap-1 mt-0.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sistema Ativo
+            <div class="flex items-center gap-3">
+                <!-- INDICADOR DATA E SISTEMA -->
+                <div class="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg text-right">
+                    <div class="text-[9px] font-bold uppercase text-slate-400 dark:text-slate-400">Última Sincronização</div>
+                    <div class="text-xs font-extrabold text-slate-800 dark:text-slate-200" id="dataAtualizacao">Calculando...</div>
                 </div>
+
+                <!-- BOTÃO MODO CLARO / ESCURO -->
+                <button onclick="toggleDarkMode()" class="p-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-400 rounded-lg border border-slate-300 dark:border-slate-700 transition-all text-xs font-bold flex items-center gap-1.5" title="Alternar Tema">
+                    <span id="themeIcon">🌙</span>
+                    <span id="themeText" class="hidden sm:inline">Escuro</span>
+                </button>
             </div>
         </header>
 
-        <!-- CARTOES DE RESUMO EXECUTIVO (KPIS) -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Monitorado</div>
-                <div class="text-3xl font-black text-slate-900 mt-1" id="kpiTotal">21</div>
+        <!-- CARTOES KPIS (COMPACTOS - LINHA ÚNICA EM DESKTOP) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+            <div class="bg-white dark:bg-slate-900 p-2.5 px-3 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+                <div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase">Total Monitorado</div>
+                    <div class="text-xl font-black text-slate-900 dark:text-white" id="kpiTotal">21</div>
+                </div>
+                <span class="text-lg">📊</span>
             </div>
-            <div class="bg-white p-5 rounded-xl border border-emerald-200 shadow-sm bg-emerald-50/30">
-                <div class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">Abertos (Inscrições)</div>
-                <div class="text-3xl font-black text-emerald-800 mt-1" id="kpiAbertos">1</div>
+            <div class="bg-emerald-50/50 dark:bg-emerald-950/20 p-2.5 px-3 rounded-lg border border-emerald-200 dark:border-emerald-800/50 shadow-sm flex items-center justify-between">
+                <div>
+                    <div class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase">Inscrições Abertas</div>
+                    <div class="text-xl font-black text-emerald-800 dark:text-emerald-300" id="kpiAbertos">1</div>
+                </div>
+                <span class="text-lg">📝</span>
             </div>
-            <div class="bg-white p-5 rounded-xl border border-indigo-200 shadow-sm bg-indigo-50/30">
-                <div class="text-[11px] font-bold text-indigo-700 uppercase tracking-wider">Em Andamento (Provas)</div>
-                <div class="text-3xl font-black text-indigo-800 mt-1" id="kpiAndamento">1</div>
+            <div class="bg-indigo-50/50 dark:bg-indigo-950/20 p-2.5 px-3 rounded-lg border border-indigo-200 dark:border-indigo-800/50 shadow-sm flex items-center justify-between">
+                <div>
+                    <div class="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 uppercase">Em Andamento</div>
+                    <div class="text-xl font-black text-indigo-800 dark:text-indigo-300" id="kpiAndamento">1</div>
+                </div>
+                <span class="text-lg">⏳</span>
             </div>
-            <div class="bg-white p-5 rounded-xl border border-amber-200 shadow-sm bg-amber-50/30">
-                <div class="text-[11px] font-bold text-amber-700 uppercase tracking-wider">Autorizados / Previstos</div>
-                <div class="text-3xl font-black text-amber-800 mt-1" id="kpiFuturos">19</div>
+            <div class="bg-amber-50/50 dark:bg-amber-950/20 p-2.5 px-3 rounded-lg border border-amber-200 dark:border-amber-800/50 shadow-sm flex items-center justify-between">
+                <div>
+                    <div class="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase">Autorizados / Previstos</div>
+                    <div class="text-xl font-black text-amber-800 dark:text-amber-300" id="kpiFuturos">19</div>
+                </div>
+                <span class="text-lg">🎯</span>
             </div>
         </div>
 
-        <!-- BARRA DE PESQUISA E FILTROS -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-            <div>
-                <label for="searchInput" class="block text-xs font-bold uppercase text-slate-500 mb-2 tracking-wider">
-                    🔍 Buscar Órgão, Cargo ou Termo:
-                </label>
-                <div class="relative">
-                    <input type="text" id="searchInput" onkeyup="filtrarTabelas()" 
-                           placeholder="Ex: ANPD, TCDF, Auditor, TI..." 
-                           class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 focus:bg-white outline-none transition-all">
-                    <button onclick="limparBusca()" class="absolute right-3 top-3 text-slate-400 hover:text-slate-600 text-xs font-bold bg-slate-200 hover:bg-slate-300 rounded-full w-6 h-6 flex items-center justify-center transition-colors">
-                        ✕
-                    </button>
-                </div>
+        <!-- BARRA DE BUSCA E FILTROS COMPACTA -->
+        <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row gap-2.5 items-stretch md:items-center justify-between">
+            <div class="relative flex-1">
+                <input type="text" id="searchInput" onkeyup="filtrarTabelas()" 
+                       placeholder="🔍 Buscar órgão, cargo, banca ou termo (ex: Cebraspe, TI, Auditor)..." 
+                       class="w-full pl-3 pr-8 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-medium text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                <button onclick="limparBusca()" class="absolute right-2 top-2 text-slate-400 hover:text-slate-600 text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    ✕
+                </button>
             </div>
-            <div class="flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center pt-3 border-t border-slate-100">
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase">Perfil:</span>
-                    <button onclick="setFiltroPerfil('TODOS')" id="btnPerfTODOS" class="btn-perfil px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-900 text-white transition-all">Todos</button>
-                    <button onclick="setFiltroPerfil('a')" id="btnPerfA" class="btn-perfil px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Geral / Administrativa</button>
-                    <button onclick="setFiltroPerfil('c')" id="btnPerfC" class="btn-perfil px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all">Tecnologia (TI)</button>
-                </div>
-                <div class="text-[11px] text-slate-500 italic">
-                    💡 Clique em um certame para ver detalhes.
-                </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <span class="text-[10px] font-bold text-slate-400 uppercase mr-1">Perfil:</span>
+                <button onclick="setFiltroPerfil('TODOS')" id="btnPerfTODOS" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-900 dark:bg-blue-600 text-white transition-all">Todos</button>
+                <button onclick="setFiltroPerfil('a')" id="btnPerfA" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Geral / Adm</button>
+                <button onclick="setFiltroPerfil('c')" id="btnPerfC" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Tecnologia (TI)</button>
             </div>
         </div>
 
         <!-- SEÇÃO 1: ABERTOS -->
-        <section class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-            <div class="p-4 bg-emerald-700 text-white flex justify-between items-center">
-                <h2 class="font-bold text-sm tracking-wide">1º ABERTOS — INSCRIÇÕES ABERTAS</h2>
-                <span id="badgeCountSec1" class="text-xs font-bold bg-emerald-900 px-2 py-1 rounded-md">1 item</span>
+        <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div class="px-3 py-2 bg-emerald-700 dark:bg-emerald-800 text-white flex justify-between items-center">
+                <h2 class="font-bold text-xs tracking-wide">1º ABERTOS — INSCRIÇÕES ABERTAS</h2>
+                <span id="badgeCountSec1" class="text-[10px] font-bold bg-emerald-900/80 px-2 py-0.5 rounded">1 item</span>
             </div>
             <div class="table-container">
-                <table class="w-full text-left border-collapse min-w-[950px]">
+                <table class="w-full text-left border-collapse min-w-[900px]">
                     <thead>
-                        <tr class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200">
-                            <th class="p-3 w-48">Órgão</th>
-                            <th class="p-3">Cargo</th>
-                            <th class="p-3 w-28">Vagas</th>
-                            <th class="p-3 w-32">Remuneração</th>
-                            <th class="p-3 w-56">Próxima Data / Fase</th>
-                            <th class="p-3 w-32">Banca</th>
+                        <tr class="bg-slate-50 dark:bg-slate-800/60 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
+                            <th class="py-2 px-3 w-40">Órgão</th>
+                            <th class="py-2 px-3">Cargo</th>
+                            <th class="py-2 px-3 w-28">Vagas</th>
+                            <th class="py-2 px-3 w-28">Remuneração</th>
+                            <th class="py-2 px-3 w-64">Cronograma de Datas (Abertura / Encerramento / Prova)</th>
+                            <th class="py-2 px-3 w-28">Banca</th>
                         </tr>
                     </thead>
-                    <tbody id="tblSec1" class="text-xs divide-y divide-slate-100 font-medium text-slate-700">
+                    <tbody id="tblSec1" class="text-xs divide-y divide-slate-100 dark:divide-slate-800/60 font-medium text-slate-700 dark:text-slate-300">
                         <!-- TCDF -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('TCDF')">
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900 text-sm">TCDF</div>
-                                <div class="text-[11px] text-slate-500">Tribunal de Contas do DF</div>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('TCDF')">
+                            <td class="py-2 px-3">
+                                <div class="font-bold text-slate-900 dark:text-white text-xs">TCDF</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Tribunal de Contas DF</div>
                             </td>
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900">Analista Administrativo</div>
-                            </td>
-                            <td class="p-3 font-bold">10 + CR<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (edital)</div></td>
-                            <td class="p-3 font-bold">R$ 14.990,41</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-emerald-500 bg-emerald-50">
-                                    <strong class="text-emerald-700">Fim Inscrições:</strong> 17/09/2026<br>
-                                    <span class="text-[10px] text-slate-500">Provas: 22/11/2026</span>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista Administrativo</td>
+                            <td class="py-2 px-3 font-bold">10 + CR <span class="block text-[9px] font-normal text-slate-400">Estatutário</span></td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 14.990,41</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-emerald-50 dark:bg-emerald-950/40 border-l-2 border-emerald-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura:</strong> 18/08/2026</div>
+                                    <div><strong class="text-emerald-700 dark:text-emerald-400">Encerramento:</strong> 17/09/2026</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> 22/11/2026</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Cebraspe<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Cebraspe<div class="text-[9px] text-slate-400 font-normal">Atual.: 25/08/2026</div></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- SEÇÃO 2: EM ANDAMENTO (INSCRIÇÕES ENCERRADAS) -->
-        <section class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-            <div class="p-4 bg-indigo-700 text-white flex justify-between items-center">
-                <h2 class="font-bold text-sm tracking-wide">2º EM ANDAMENTO — INSCRIÇÕES ENCERRADAS (PROVAS/RESULTADOS)</h2>
-                <span id="badgeCountSec2" class="text-xs font-bold bg-indigo-900 px-2 py-1 rounded-md">1 item</span>
+        <!-- SEÇÃO 2: EM ANDAMENTO -->
+        <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div class="px-3 py-2 bg-indigo-700 dark:bg-indigo-800 text-white flex justify-between items-center">
+                <h2 class="font-bold text-xs tracking-wide">2º EM ANDAMENTO — INSCRIÇÕES ENCERRADAS (PROVAS/RESULTADOS)</h2>
+                <span id="badgeCountSec2" class="text-[10px] font-bold bg-indigo-900/80 px-2 py-0.5 rounded">1 item</span>
             </div>
             <div class="table-container">
-                <table class="w-full text-left border-collapse min-w-[950px]">
+                <table class="w-full text-left border-collapse min-w-[900px]">
                     <thead>
-                        <tr class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200">
-                            <th class="p-3 w-48">Órgão</th>
-                            <th class="p-3">Cargo</th>
-                            <th class="p-3 w-28">Vagas</th>
-                            <th class="p-3 w-32">Remuneração</th>
-                            <th class="p-3 w-56">Próxima Data / Fase</th>
-                            <th class="p-3 w-32">Banca</th>
+                        <tr class="bg-slate-50 dark:bg-slate-800/60 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
+                            <th class="py-2 px-3 w-40">Órgão</th>
+                            <th class="py-2 px-3">Cargo</th>
+                            <th class="py-2 px-3 w-28">Vagas</th>
+                            <th class="py-2 px-3 w-28">Remuneração</th>
+                            <th class="py-2 px-3 w-64">Cronograma de Datas (Abertura / Encerramento / Prova)</th>
+                            <th class="py-2 px-3 w-28">Banca</th>
                         </tr>
                     </thead>
-                    <tbody id="tblSec2" class="text-xs divide-y divide-slate-100 font-medium text-slate-700">
+                    <tbody id="tblSec2" class="text-xs divide-y divide-slate-100 dark:divide-slate-800/60 font-medium text-slate-700 dark:text-slate-300">
                         <!-- SEDES-DF -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEDES_DF')">
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900 text-sm">SEDES-DF</div>
-                                <div class="text-[11px] text-slate-500">Sec. Desenvolv. Social DF</div>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEDES_DF')">
+                            <td class="py-2 px-3">
+                                <div class="font-bold text-slate-900 dark:text-white text-xs">SEDES-DF</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Sec. Desenvolv. Social DF</div>
                             </td>
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900">EDAS / TDAS</div>
-                            </td>
-                            <td class="p-3 font-bold">1.197 + CR<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (CadÚnico)</div></td>
-                            <td class="p-3 font-bold">R$ 6.071,09</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-indigo-500 bg-indigo-50">
-                                    <strong class="text-indigo-700">Provas Objetivas:</strong> 06/09/2026<br>
-                                    <span class="text-[10px] text-slate-500">Locais de prova: Fim de Agosto</span>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">EDAS / TDAS</td>
+                            <td class="py-2 px-3 font-bold">1.197 + CR <span class="block text-[9px] font-normal text-slate-400">Estatutário</span></td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 6.071,09</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-indigo-50 dark:bg-indigo-950/40 border-l-2 border-indigo-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura:</strong> 01/07/2026</div>
+                                    <div><strong class="text-red-600 dark:text-red-400">Encerramento:</strong> Encerradas</div>
+                                    <div><strong class="text-indigo-700 dark:text-indigo-300">Provas Objetivas:</strong> 06/09/2026</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Inst. Quadrix<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Inst. Quadrix<div class="text-[9px] text-slate-400 font-normal">Atual.: 21/08/2026</div></td>
                         </tr>
                     </tbody>
                 </table>
@@ -179,174 +185,173 @@
         </section>
 
         <!-- SEÇÃO 3: AUTORIZADOS -->
-        <section class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-            <div class="p-4 bg-blue-700 text-white flex justify-between items-center">
-                <h2 class="font-bold text-sm tracking-wide">3º AUTORIZADOS — BANCA/COMISSÃO FORMADA OU AUTORIZADOS OFICIALMENTE</h2>
-                <span id="badgeCountSec3" class="text-xs font-bold bg-blue-900 px-2 py-1 rounded-md">10 itens</span>
+        <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div class="px-3 py-2 bg-blue-700 dark:bg-blue-800 text-white flex justify-between items-center">
+                <h2 class="font-bold text-xs tracking-wide">3º AUTORIZADOS — BANCA/COMISSÃO FORMADA OU AUTORIZADOS OFICIALMENTE</h2>
+                <span id="badgeCountSec3" class="text-[10px] font-bold bg-blue-900/80 px-2 py-0.5 rounded">10 itens</span>
             </div>
             <div class="table-container">
-                <table class="w-full text-left border-collapse min-w-[950px]">
+                <table class="w-full text-left border-collapse min-w-[900px]">
                     <thead>
-                        <tr class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200">
-                            <th class="p-3 w-48">Órgão</th>
-                            <th class="p-3">Cargo</th>
-                            <th class="p-3 w-28">Vagas</th>
-                            <th class="p-3 w-32">Remuneração</th>
-                            <th class="p-3 w-56">Próxima Data / Fase</th>
-                            <th class="p-3 w-32">Banca</th>
+                        <tr class="bg-slate-50 dark:bg-slate-800/60 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
+                            <th class="py-2 px-3 w-40">Órgão</th>
+                            <th class="py-2 px-3">Cargo</th>
+                            <th class="py-2 px-3 w-28">Vagas</th>
+                            <th class="py-2 px-3 w-28">Remuneração</th>
+                            <th class="py-2 px-3 w-64">Cronograma de Datas (Abertura / Encerramento / Prova)</th>
+                            <th class="py-2 px-3 w-28">Banca</th>
                         </tr>
                     </thead>
-                    <tbody id="tblSec3" class="text-xs divide-y divide-slate-100 font-medium text-slate-700">
-                        <!-- ANPD (Movido para cá) -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="c" onclick="abrirModal('ANPD')">
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900 text-sm">ANPD</div>
-                                <div class="text-[11px] text-slate-500">Aut. Nac. de Proteção de Dados</div>
-                            </td>
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900">Especialista em Regulação</div>
-                            </td>
-                            <td class="p-3 font-bold">50 imediatas<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">3 PCD + 2 indígenas + 1 quilombola</div></td>
-                            <td class="p-3 font-bold">R$ 17.726,42</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data">
-                                    <strong class="text-blue-700">Definição da Banca:</strong> Fim de 2026<br>
-                                    <span class="text-[10px] text-slate-500">Concurso Oficialmente Autorizado</span>
+                    <tbody id="tblSec3" class="text-xs divide-y divide-slate-100 dark:divide-slate-800/60 font-medium text-slate-700 dark:text-slate-300">
+                        <!-- ANPD -->
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="c" onclick="abrirModal('ANPD')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">ANPD</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Especialista em Regulação</td>
+                            <td class="py-2 px-3 font-bold">50 imediatas</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 17.726,42</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-blue-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura / Edital:</strong> Até Dez/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> A definir</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> ~1º Tri/2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">A definir<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
                         </tr>
                         <!-- COFEN TI -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="c" onclick="abrirModal('COFEN_TI')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">COFEN (TI)</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Analista de TI</div></td>
-                            <td class="p-3 font-bold">16 + CR<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-teal-600 text-white rounded">CLT</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD/cotas: a definir no edital</div></td>
-                            <td class="p-3 font-bold">R$ 18.950,52</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data">
-                                    <strong class="text-blue-700">Publicação Edital:</strong> Até 15/09/2026<br>
-                                    <span class="text-[10px] text-slate-500">Minuta finalizada</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="c" onclick="abrirModal('COFEN_TI')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">COFEN (TI)</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista de TI</td>
+                            <td class="py-2 px-3 font-bold">16 + CR</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 18.950,52</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-blue-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura / Edital:</strong> Até 15/09/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> Out/2026</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Nov/2026</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Inst. Quadrix<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Inst. Quadrix</td>
                         </tr>
                         <!-- COFEN GERAL -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('COFEN_GERAL')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">COFEN (Geral)</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Analista Técnico</div></td>
-                            <td class="p-3 font-bold">A definir<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-teal-600 text-white rounded">CLT</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD/cotas: a definir no edital</div></td>
-                            <td class="p-3 font-bold">R$ 18.950,52</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data">
-                                    <strong class="text-blue-700">Publicação Edital:</strong> Até 15/09/2026<br>
-                                    <span class="text-[10px] text-slate-500">Junto ao edital de TI</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('COFEN_GERAL')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">COFEN (Geral)</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista Técnico</td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 18.950,52</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-blue-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura / Edital:</strong> Até 15/09/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> Out/2026</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Nov/2026</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Inst. Quadrix<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Inst. Quadrix</td>
                         </tr>
                         <!-- SEEC-DF -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEEC_DF')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">SEEC-DF</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Analista Planejamento</div></td>
-                            <td class="p-3 font-bold">A definir<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: a definir no edital</div></td>
-                            <td class="p-3 font-bold">R$ 7.975,28</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data">
-                                    <strong class="text-blue-700">Publicação Edital:</strong> Out/2026<br>
-                                    <span class="text-[10px] text-slate-500">Banca já contratada</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEEC_DF')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">SEEC-DF</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista Planejamento</td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 7.975,28</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-blue-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura / Edital:</strong> Out/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> Nov/2026</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Jan/2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Consulplan<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Consulplan</td>
                         </tr>
                         <!-- PCDF -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('PCDF')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">PCDF</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Agente de Custódia</div></td>
-                            <td class="p-3 font-bold">50 + 100 CR<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (edital)</div></td>
-                            <td class="p-3 font-bold">R$ 13.794,41</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-amber-400">
-                                    <strong class="text-amber-700">Assinatura Banca:</strong> Set/2026<br>
-                                    <span class="text-[10px] text-slate-500">Processo na Procuradoria (PGDF)</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('PCDF')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">PCDF</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Agente de Custódia</td>
+                            <td class="py-2 px-3 font-bold">50 + 100 CR</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 13.794,41</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-amber-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Assinatura Banca:</strong> Set/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Out/2026</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Debr/2026</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">A definir<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
                         </tr>
                         <!-- SEDF -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEDF')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">SEDF</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Gestor (PPGE)</div></td>
-                            <td class="p-3 font-bold">471 + CR<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (edital)</div></td>
-                            <td class="p-3 font-bold">R$ 5.445,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-amber-400">
-                                    <strong class="text-amber-700">Escolha da Banca:</strong> Out/2026<br>
-                                    <span class="text-[10px] text-slate-500">Comissão elaborando Termo de Ref.</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEDF')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">SEDF</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Gestor (PPGE)</td>
+                            <td class="py-2 px-3 font-bold">471 + CR</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 5.445,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-amber-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Escolha Banca:</strong> Out/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Fim/2026</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> 2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">A definir<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
                         </tr>
                         <!-- CFC -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('CFC')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">CFC</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Contador / Analista</div></td>
-                            <td class="p-3 font-bold">A definir<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-teal-600 text-white rounded">CLT</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD/cotas: a definir no edital</div></td>
-                            <td class="p-3 font-bold">R$ 10.000,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data">
-                                    <strong class="text-blue-700">Publicação Edital:</strong> Nov/2026<br>
-                                    <span class="text-[10px] text-slate-500">Cronograma em alinhamento</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('CFC')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">CFC</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Contador / Analista</td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 10.000,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-blue-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura / Edital:</strong> Nov/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> Dez/2026</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Fev/2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">EPL Concursos<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">EPL Concursos</td>
                         </tr>
-                        <!-- SEFAZ-DF (corrigido: banca Cebraspe já contratada) -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEFAZ_DF')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">SEFAZ-DF</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Auditor Fiscal</div></td>
-                            <td class="p-3 font-bold">115 + 150 CR<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">R$ 16.000,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data">
-                                    <strong class="text-blue-700">Publicação Edital:</strong> A confirmar<br>
-                                    <span class="text-[10px] text-slate-500">Minuta em ajustes</span>
+                        <!-- SEFAZ-DF -->
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEFAZ_DF')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">SEFAZ-DF</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Auditor Fiscal</td>
+                            <td class="py-2 px-3 font-bold">115 + 150 CR</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 16.000,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-blue-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura / Edital:</strong> A confirmar</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> A definir</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> A definir</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Cebraspe<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Cebraspe</td>
                         </tr>
-                        <!-- AGSUS (paraestatal, adicionada nesta auditoria) -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('AGSUS')">
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900 text-sm">AgSUS</div>
-                                <div class="text-[11px] text-slate-500">Agência Bras. de Apoio à Gestão do SUS</div>
-                            </td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Analista/Auxiliar de Gestão (diversos)</div></td>
-                            <td class="p-3 font-bold">CR contínuo<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-teal-600 text-white rounded">CLT</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD 5% / negros 25% / indígenas 3% / quilombolas 2%</div></td>
-                            <td class="p-3 font-bold">R$ 4.000 a R$ 17.700</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data">
-                                    <strong class="text-blue-700">Editais contínuos:</strong> Ao longo de 2026<br>
-                                    <span class="text-[10px] text-slate-500">Múltiplos editais por unidade/DSEI</span>
+                        <!-- AGSUS -->
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('AGSUS')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">AgSUS</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista / Auxiliar</td>
+                            <td class="py-2 px-3 font-bold">CR contínuo</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">Até R$ 17.700</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-blue-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura:</strong> Editais Contínuos</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> Variável por edital</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas / Seleção:</strong> Ao longo de 2026</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Cebraspe / FGV<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Cebraspe / FGV</td>
                         </tr>
-                        <!-- IGESDF (paraestatal, adicionada na atualização de 25/08) -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('IGESDF')">
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900 text-sm">IGESDF</div>
-                                <div class="text-[11px] text-slate-500">Inst. Gestão Estratégica de Saúde do DF</div>
-                            </td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Médico/Enfermeiro/Técnico (diversos)</div></td>
-                            <td class="p-3 font-bold">CR contínuo<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-teal-600 text-white rounded">CLT</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: 20% das convocações futuras</div></td>
-                            <td class="p-3 font-bold">R$ 3.100 a R$ 18.100</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data">
-                                    <strong class="text-blue-700">Editais contínuos:</strong> Ao longo de 2026<br>
-                                    <span class="text-[10px] text-slate-500">Hospital de Base, HRSM e UPAs do DF</span>
+                        <!-- IGESDF -->
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('IGESDF')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">IGESDF</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Médico / Enfermeiro / Tec</td>
+                            <td class="py-2 px-3 font-bold">CR contínuo</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">Até R$ 18.100</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-blue-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura:</strong> Editais Mensais</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> Variável por edital</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas / Seleção:</strong> Mensal 2026</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Própria (IGESDF)<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Própria (IGESDF)</td>
                         </tr>
                     </tbody>
                 </table>
@@ -354,155 +359,158 @@
         </section>
 
         <!-- SEÇÃO 4: PREVISTOS -->
-        <section class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-            <div class="p-4 bg-amber-600 text-white flex justify-between items-center">
-                <h2 class="font-bold text-sm tracking-wide">4º PREVISTOS — SOLICITADOS / ESTUDOS EM ANDAMENTO</h2>
-                <span id="badgeCountSec4" class="text-xs font-bold bg-amber-800 px-2 py-1 rounded-md">9 itens</span>
+        <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div class="px-3 py-2 bg-amber-600 dark:bg-amber-800 text-white flex justify-between items-center">
+                <h2 class="font-bold text-xs tracking-wide">4º PREVISTOS — SOLICITADOS / ESTUDOS EM ANDAMENTO</h2>
+                <span id="badgeCountSec4" class="text-[10px] font-bold bg-amber-900/80 px-2 py-0.5 rounded">9 itens</span>
             </div>
             <div class="table-container">
-                <table class="w-full text-left border-collapse min-w-[950px]">
+                <table class="w-full text-left border-collapse min-w-[900px]">
                     <thead>
-                        <tr class="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200">
-                            <th class="p-3 w-48">Órgão</th>
-                            <th class="p-3">Cargo</th>
-                            <th class="p-3 w-28">Pedido</th>
-                            <th class="p-3 w-32">Remuneração</th>
-                            <th class="p-3 w-56">Próxima Data / Fase</th>
-                            <th class="p-3 w-32">Banca</th>
+                        <tr class="bg-slate-50 dark:bg-slate-800/60 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
+                            <th class="py-2 px-3 w-40">Órgão</th>
+                            <th class="py-2 px-3">Cargo</th>
+                            <th class="py-2 px-3 w-28">Pedido</th>
+                            <th class="py-2 px-3 w-28">Remuneração</th>
+                            <th class="py-2 px-3 w-64">Cronograma de Datas (Abertura / Encerramento / Prova)</th>
+                            <th class="py-2 px-3 w-28">Banca</th>
                         </tr>
                     </thead>
-                    <tbody id="tblSec4" class="text-xs divide-y divide-slate-100 font-medium text-slate-700">
+                    <tbody id="tblSec4" class="text-xs divide-y divide-slate-100 dark:divide-slate-800/60 font-medium text-slate-700 dark:text-slate-300">
                         <!-- RECEITA -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('RECEITA')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">Receita Federal</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Auditor / Analista</div></td>
-                            <td class="p-3 font-bold">146 vagas<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">R$ 21.000,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-slate-300 bg-slate-100">
-                                    <strong class="text-slate-700">Portaria MGI:</strong> Nov/2026<br>
-                                    <span class="text-[10px] text-slate-500">Aguardando Aval Presidencial</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('RECEITA')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">Receita Federal</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Auditor / Analista</td>
+                            <td class="py-2 px-3 font-bold">146 vagas</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 21.000,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Portaria MGI:</strong> Nov/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Prev. 2027</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Prev. 2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">-<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">-</td>
                         </tr>
                         <!-- CGU -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('CGU')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">CGU</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Auditor (AFFC)</div></td>
-                            <td class="p-3 font-bold">470 vagas<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">R$ 20.000,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-slate-300 bg-slate-100">
-                                    <strong class="text-slate-700">Portaria MGI:</strong> Nov/2026<br>
-                                    <span class="text-[10px] text-slate-500">Em trâmite interno</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('CGU')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">CGU</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Auditor (AFFC)</td>
+                            <td class="py-2 px-3 font-bold">470 vagas</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 20.000,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Portaria MGI:</strong> Nov/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Prev. 2027</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Prev. 2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">-<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">-</td>
                         </tr>
                         <!-- ANAC -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('ANAC')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">ANAC</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Especialista / Analista</div></td>
-                            <td class="p-3 font-bold">332 vagas<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">R$ 16.400,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-slate-300 bg-slate-100">
-                                    <strong class="text-slate-700">Portaria MGI:</strong> Nov/2026<br>
-                                    <span class="text-[10px] text-slate-500">Pacote Agências Reguladoras</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('ANAC')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">ANAC</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Especialista / Analista</td>
+                            <td class="py-2 px-3 font-bold">332 vagas</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 16.400,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Portaria MGI:</strong> Nov/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Prev. 2027</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Prev. 2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">-<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">-</td>
                         </tr>
                         <!-- ANTT -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('ANTT')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">ANTT</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Especialista / Analista</div></td>
-                            <td class="p-3 font-bold">170 vagas<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">R$ 16.400,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-slate-300 bg-slate-100">
-                                    <strong class="text-slate-700">Portaria MGI:</strong> Nov/2026<br>
-                                    <span class="text-[10px] text-slate-500">Pacote Agências Reguladoras</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('ANTT')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">ANTT</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Especialista / Analista</td>
+                            <td class="py-2 px-3 font-bold">170 vagas</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 16.400,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Portaria MGI:</strong> Nov/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Prev. 2027</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Prev. 2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">-<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">-</td>
                         </tr>
                         <!-- PRF ADM -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('PRF_ADM')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">PRF (Sede/DF)</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Agente Administrativo</div></td>
-                            <td class="p-3 font-bold">248 vagas<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">R$ 6.000,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-slate-300 bg-slate-100">
-                                    <strong class="text-slate-700">Autorização:</strong> 1º Trimestre/2027<br>
-                                    <span class="text-[10px] text-slate-500">Estudos em reavaliação no MJ</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('PRF_ADM')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">PRF (Sede/DF)</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Agente Administrativo</td>
+                            <td class="py-2 px-3 font-bold">248 vagas</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 6.000,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Autorização:</strong> 1º Trim/2027</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Prev. 2027</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Prev. 2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">-<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">-</td>
                         </tr>
                         <!-- IBRAM -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('IBRAM_DF')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">IBRAM-DF</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Analista Ambiental</div></td>
-                            <td class="p-3 font-bold">A definir<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">R$ 7.500,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-slate-300 bg-slate-100">
-                                    <strong class="text-slate-700">Formação de Comissão:</strong> 2027<br>
-                                    <span class="text-[10px] text-slate-500">Na fase de estudos preliminares</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('IBRAM_DF')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">IBRAM-DF</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista Ambiental</td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 7.500,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Comissão:</strong> 2027</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Prev. 2027</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Prev. 2027</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">-<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">-</td>
                         </tr>
                         <!-- SISTEMA S -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="c" onclick="abrirModal('SISTEMA_S')">
-                            <td class="p-3"><div class="font-bold text-slate-900 text-sm">Sistema S / Paraestatais</div></td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Analista Técnico / TI</div></td>
-                            <td class="p-3 font-bold">Variável<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-teal-600 text-white rounded">CLT</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD/cotas: variável por edital</div></td>
-                            <td class="p-3 font-bold">R$ 8.000,00</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-slate-300 bg-slate-100">
-                                    <strong class="text-slate-700">Próximos Editais:</strong> Set/2026<br>
-                                    <span class="text-[10px] text-slate-500">Editais lançados mensalmente</span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="c" onclick="abrirModal('SISTEMA_S')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">Sistema S</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista Técnico / TI</td>
+                            <td class="py-2 px-3 font-bold">Variável</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 8.000,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura:</strong> Mensal</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> Variável</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Mensal</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">Própria/IADES<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 21/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">Própria/IADES</td>
                         </tr>
-                        <!-- SES-DF (adm. direta, adicionada na atualização de 25/08) -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SES_DF')">
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900 text-sm">SES-DF</div>
-                                <div class="text-[11px] text-slate-500">Secretaria de Saúde do DF</div>
-                            </td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Diversos (saúde e apoio)</div></td>
-                            <td class="p-3 font-bold">322 + 2.057 CR<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">A definir</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-slate-300 bg-slate-100">
-                                    <strong class="text-slate-700">Edital:</strong> Previsto, sem data confirmada<br>
-                                    <span class="text-[10px] text-slate-500">Banca ainda não definida</span>
+                        <!-- SES-DF -->
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SES_DF')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">SES-DF</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Diversos (Saúde)</td>
+                            <td class="py-2 px-3 font-bold">322 + 2.057 CR</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">A definir</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> Previsto sem data</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Encerramento:</strong> A definir</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> A definir</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">A definir<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
                         </tr>
-                        <!-- DER-DF (adm. indireta, adicionada na atualização de 25/08) -->
-                        <tr class="hover:bg-slate-50 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('DER_DF')">
-                            <td class="p-3">
-                                <div class="font-bold text-slate-900 text-sm">DER-DF</div>
-                                <div class="text-[11px] text-slate-500">Depto. de Estradas de Rodagem do DF</div>
-                            </td>
-                            <td class="p-3"><div class="font-bold text-slate-900">Diversos (Engenharia e apoio)</div></td>
-                            <td class="p-3 font-bold">A definir<div class="mt-1"><span class="inline-block mt-1 px-1.5 py-0.5 text-[9px] font-bold bg-slate-800 text-white rounded">Estatutário</span></div><div class="text-[9px] text-slate-400 mt-0.5">PCD: cotas legais (a definir)</div></td>
-                            <td class="p-3 font-bold">A definir</td>
-                            <td class="p-3">
-                                <div class="badge-proxima-data border-red-300 bg-red-50">
-                                    <strong class="text-red-700">Edital:</strong> Autorizado desde 2023, parado<br>
-                                    <span class="text-[10px] text-slate-500">TCDF cobra explicações; 500+ cargos vagos</span>
+                        <!-- DER-DF -->
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('DER_DF')">
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">DER-DF</div></td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Engenharia e Apoio</td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">A definir</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-red-50 dark:bg-red-950/30 border-l-2 border-red-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-red-700 dark:text-red-400">Status:</strong> Autorizado desde 2023 (Parado)</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Cobrança TCDF:</strong> Em andamento</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> Sem previsão</div>
                                 </div>
                             </td>
-                            <td class="p-3 font-bold">A definir<div class="text-[9px] text-slate-400 font-normal mt-1">Atual.: 25/08/2026</div></td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
                         </tr>
                     </tbody>
                 </table>
@@ -512,75 +520,91 @@
     </div>
 
     <!-- POP-UP MODAL -->
-    <div id="modal" class="fixed inset-0 modal-backdrop hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div class="flex justify-between items-start border-b border-slate-100 pb-3">
+    <div id="modal" class="fixed inset-0 modal-backdrop hidden flex items-center justify-center p-4 z-50 bg-slate-900/60">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-lg w-full p-5 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div class="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3">
                 <div>
-                    <h3 id="modalTitle" class="text-xl font-black text-slate-900">Órgão</h3>
+                    <h3 id="modalTitle" class="text-lg font-black text-slate-900 dark:text-white">Órgão</h3>
                 </div>
-                <button onclick="fecharModal()" class="text-slate-400 hover:text-slate-700 font-bold text-2xl leading-none">&times;</button>
+                <button onclick="fecharModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 font-bold text-xl leading-none">&times;</button>
             </div>
-            <div class="text-sm text-slate-600 space-y-3">
-                <p id="modalStatusText" class="font-medium bg-slate-50 p-3 rounded-lg border border-slate-200">Resumo...</p>
-                <div class="pt-2">
-                    <strong class="block text-slate-800 mb-1">Próxima Ação Mapeada:</strong>
-                    <div id="modalHistorico" class="text-xs bg-blue-50/50 p-3 rounded-lg border border-blue-100 text-blue-900 font-semibold"></div>
+            <div class="text-xs text-slate-600 dark:text-slate-300 space-y-3">
+                <p id="modalStatusText" class="font-medium bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700">Resumo...</p>
+                <div class="pt-1">
+                    <strong class="block text-slate-800 dark:text-slate-200 mb-1">Próxima Ação Mapeada:</strong>
+                    <div id="modalHistorico" class="text-xs bg-blue-50/50 dark:bg-blue-950/40 p-2.5 rounded-lg border border-blue-100 dark:border-blue-900/40 text-blue-900 dark:text-blue-300 font-semibold"></div>
                 </div>
             </div>
-            <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
-                <a id="modalLink" href="#" target="_blank" rel="noopener" class="px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-sm rounded-lg transition-all">
+            <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+                <a id="modalLink" href="#" target="_blank" rel="noopener" class="px-3.5 py-2 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold text-xs rounded-lg transition-all">
                     🔗 Ver Fonte / Banca Oficial
                 </a>
-                <button onclick="fecharModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm rounded-lg transition-all">
-                    Fechar Janela
+                <button onclick="fecharModal()" class="px-4 py-2 bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 text-white font-bold text-xs rounded-lg transition-all">
+                    Fechar
                 </button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- NOVO CÓDIGO: ATUALIZAR A DATA NA TELA ---
+        // MODO CLARO / ESCURO
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').innerText = isDark ? 'Claro' : 'Escuro';
+        }
+
+        // Carrega tema salvo
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('themeIcon').innerText = '☀️';
+            document.getElementById('themeText').innerText = 'Claro';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('themeIcon').innerText = '🌙';
+            document.getElementById('themeText').innerText = 'Escuro';
+        }
+
+        // Data Dinâmica
         function atualizarDataInterface() {
             const agora = new Date();
             const opcoesData = { day: 'numeric', month: 'long', year: 'numeric' };
             const dataFormatada = agora.toLocaleDateString('pt-BR', opcoesData);
-            
-            // Se quiser que mostre a hora também, descomente a linha abaixo e mude a linha do innerText
             const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            
-            // Atualiza o elemento no HTML
             document.getElementById('dataAtualizacao').innerText = `${dataFormatada} às ${horaFormatada}`;
         }
-        
-        // Chama a função assim que a página é carregada
         atualizarDataInterface();
-        // ----------------------------------------------
 
         let filtroPerfilAtual = 'TODOS';
 
-        const dadosAuditoria = {
-            'TCDF': { titulo: 'TCDF 2026', status: 'Edital nº 1/2026 publicado para Analista Administrativo de Controle Externo.', historico: 'Fim das inscrições em 17/09/2026. Aplicação das Provas em 22/11/2026.', link: 'https://www.cebraspe.org.br/concursos/tc_df_26_analista' },
-            'SEDES_DF': { titulo: 'SEDES-DF', status: 'Concurso unificado para EDAS e TDAS (14 especialidades). Inscrições já encerradas.', historico: 'Realização das Provas em 06/09/2026.', link: 'https://www.quadrix.org.br/' },
-            'ANPD': { titulo: 'ANPD', status: 'Concurso autorizado (Portaria MGI nº 5.092, de 22/06/2026) para 50 vagas imediatas de Especialista em Regulação de Proteção de Dados (nível superior), sendo 31 ampla concorrência, 13 negros, 3 PCD, 2 indígenas e 1 quilombola. Remuneração inicial R$ 17.726,42 (podendo chegar a R$ 29.119,71 no topo da carreira). Banca organizadora ainda não definida.', historico: 'Comissão organizadora formada em 20/07/2026 (alterações em 17/08/2026), conduzindo os estudos técnicos para contratação da banca (prazo até 10/09/2026, prorrogável por 30 dias). Edital deve ser publicado em até 6 meses da autorização (prazo legal ~dez/2026), com provas no mínimo 2 meses após.', link: 'https://www.gov.br/anpd/pt-br/assuntos/noticias/copy_of_primeiro-concurso-publico-para-carreira-propria-da-anpd-e-autorizado' },
-            'COFEN_TI': { titulo: 'COFEN — TI', status: 'Vagas para Analista de TI e Suporte Técnico na Sede.', historico: 'Publicação do Edital prevista até 15/09/2026 (Minuta aprovada).', link: 'https://www.cofen.gov.br/categoria/concursos/' },
-            'COFEN_GERAL': { titulo: 'COFEN — Geral', status: 'Cargos de Analista Técnico e Gestão de Pessoas.', historico: 'Publicação do Edital prevista até 15/09/2026, em conjunto com a área de TI.', link: 'https://www.cofen.gov.br/categoria/concursos/' },
-            'SEEC_DF': { titulo: 'SEEC-DF', status: 'Carreira de Planejamento e Infraestrutura do DF. Banca Consulplan contratada.', historico: 'Lançamento do edital no DODF esperado para Outubro/2026.' },
-            'PCDF': { titulo: 'PCDF — Agente de Custódia', status: 'Autorização confirmada para 50 vagas imediatas + 100 CR.', historico: 'Assinatura do contrato com a banca organizadora prevista para Setembro/2026.' },
-            'SEDF': { titulo: 'SEDF — PPGE', status: 'Gestor e Analista em Políticas Públicas e Gestão Educacional.', historico: 'Comissão organizadora definirá a banca em Outubro/2026.' },
-            'CFC': { titulo: 'CFC', status: 'Concurso de Contador, Procurador e Analista. EPL Concursos contratada.', historico: 'Edital aguardado para Novembro/2026.' },
-            'RECEITA': { titulo: 'Receita Federal', status: 'Pedido para 146 vagas (Auditor e Analista) com lotação específica em Brasília.', historico: 'Aguardando portaria de autorização do MGI em Novembro/2026.' },
-            'SEFAZ_DF': { titulo: 'SEFAZ-DF', status: 'Auditor Fiscal. Banca Cebraspe já contratada; edital ofertará 265 vagas (115 imediatas + 150 CR). Corrigido nesta auditoria — versão anterior indicava banca "a definir", o que estava desatualizado.', historico: 'Minuta do edital em fase de ajustes. Publicação ainda sem data confirmada.', link: '' },
-            'AGSUS': { titulo: 'AgSUS — Agência Brasileira de Apoio à Gestão do SUS', status: 'Paraestatal vinculada ao Ministério da Saúde. Realiza processos seletivos contínuos (não é concurso estatutário) para cadastro de reserva, com editais frequentes por unidade/DSEI, incluindo Brasília/DF. Regime CLT, contratos por prazo determinado/indeterminado conforme edital.', historico: 'Editais nº 83, 91 e outros publicados ao longo de julho/agosto de 2026, cada um com vagas específicas por unidade. Acompanhar o portal de editais para novas aberturas.', link: 'https://agsus.empregare.com/pt-br/editais' },
-            'IGESDF': { titulo: 'IGESDF — Instituto de Gestão Estratégica de Saúde do DF', status: 'Paraestatal (organização social) que administra o Hospital de Base, o Hospital Regional de Santa Maria e as UPAs do DF. Publica processos seletivos simplificados contínuos para cadastro de reserva em diversas áreas da saúde (médicos, enfermeiros, técnicos, farmacêuticos etc.), regime CLT.', historico: 'Múltiplos editais publicados ao longo de 2026 (dez/2025, fev, mar, mai, jun, jul/2026), cada um com cargo e cronograma próprios. PCD: 20% das convocações futuras em alguns editais.', link: 'https://processoseletivo.igesdf.org.br' },
-            'SES_DF': { titulo: 'SES-DF', status: 'Secretaria de Saúde do DF. Previsão de concurso com 2.379 vagas (322 imediatas + 2.057 CR) mencionada por fontes especializadas para o 1º semestre de 2026 — ainda sem confirmação oficial de autorização formal nem banca.', historico: 'Sem edital publicado até 25/08/2026. Acompanhar publicações no DODF.', link: '' },
-            'DER_DF': { titulo: 'DER-DF — Departamento de Estradas de Rodagem do DF', status: 'Concurso autorizado desde 2023, mas o edital nunca foi publicado. O TCDF cobrou explicações do órgão sobre a demora. Autarquia distrital com mais de 500 cargos vagos atualmente.', historico: 'Situação parada — sem novidades formais até 25/08/2026. Inclusão nesta auditoria para fins de acompanhamento, dado o histórico de cobrança do TCDF.', link: '' },
-            'CGU': { titulo: 'CGU', status: 'Pedido de 470 vagas para Auditor (AFFC) na Sede.', historico: 'Aguardando Aval do Ministério da Gestão (MGI) no pacote de Novembro/2026.' },
-            'ANAC': { titulo: 'ANAC', status: 'Pedido para 332 vagas de Especialista e Analista.', historico: 'Autorização esperada no pacote de Agências Reguladoras do MGI (Nov/2026).' },
-            'ANTT': { titulo: 'ANTT', status: 'Pedido de 170+ vagas para Brasília.', historico: 'Autorização esperada no pacote de Agências Reguladoras do MGI (Nov/2026).' },
-            'PRF_ADM': { titulo: 'PRF (Administrativo)', status: 'Pedido para 248 vagas do plano administrativo PECPRF (Sede).', historico: 'Reavaliação orçamentária no Ministério da Justiça para 2027.' },
-            'IBRAM_DF': { titulo: 'IBRAM-DF', status: 'Previsão de concurso para Analista Ambiental.', historico: 'Formação da Comissão Organizadora aguardada para início de 2027.' },
-            'SISTEMA_S': { titulo: 'Sistema S (SEBRAE, IGES)', status: 'Seleções contínuas regidas pela CLT.', historico: 'Novos editais regionais abertos sistematicamente a partir de Setembro/2026.' }
+        const dadosManuais = {
+            'TCDF': { titulo: 'TCDF 2026', status: 'Edital nº 1/2026 publicado para Analista Administrativo de Controle Externo.', historico: 'Inscrições: 18/08 a 17/09/2026. Aplicação das Provas em 22/11/2026.', link: 'https://www.cebraspe.org.br/concursos/tc_df_26_analista' },
+            'SEDES_DF': { titulo: 'SEDES-DF', status: 'Concurso unificado para EDAS e TDAS (14 especialidades). Inscrições já encerradas.', historico: 'Realização das Provas Objetivas em 06/09/2026.', link: 'https://www.quadrix.org.br/' },
+            'ANPD': { titulo: 'ANPD', status: 'Concurso autorizado (Portaria MGI nº 5.092) para 50 vagas de Especialista em Regulação.', historico: 'Edital aguardado para o fim de 2026.', link: 'https://www.gov.br/' },
+            'COFEN_TI': { titulo: 'COFEN — TI', status: 'Vagas para Analista de TI e Suporte Técnico na Sede.', historico: 'Edital previsto até 15/09/2026.', link: 'https://www.cofen.gov.br/' },
+            'COFEN_GERAL': { titulo: 'COFEN — Geral', status: 'Cargos de Analista Técnico e Gestão de Pessoas.', historico: 'Edital previsto até 15/09/2026.', link: 'https://www.cofen.gov.br/' },
+            'SEEC_DF': { titulo: 'SEEC-DF', status: 'Carreira de Planejamento e Infraestrutura do DF.', historico: 'Lançamento do edital esperado para Outubro/2026.' },
+            'PCDF': { titulo: 'PCDF — Agente de Custódia', status: 'Autorização para 50 vagas imediatas + 100 CR.', historico: 'Assinatura do contrato com a banca prevista para Set/2026.' },
+            'SEDF': { titulo: 'SEDF — PPGE', status: 'Gestor e Analista em Políticas Públicas.', historico: 'Definição de banca em Outubro/2026.' },
+            'CFC': { titulo: 'CFC', status: 'Concurso de Contador, Procurador e Analista.', historico: 'Edital aguardado para Novembro/2026.' },
+            'RECEITA': { titulo: 'Receita Federal', status: 'Pedido para 146 vagas (Auditor/Analista) no DF.', historico: 'Aguardando portaria MGI em Nov/2026.' },
+            'SEFAZ_DF': { titulo: 'SEFAZ-DF', status: 'Auditor Fiscal. Banca Cebraspe contratada.', historico: 'Minuta do edital em ajustes.' },
+            'AGSUS': { titulo: 'AgSUS', status: 'Processos seletivos contínuos para cadastro de reserva.', historico: 'Editais frequentes por unidade/DSEI.', link: 'https://agsus.empregare.com/pt-br/editais' },
+            'IGESDF': { titulo: 'IGESDF', status: 'Processos seletivos contínuos para a saúde.', historico: 'Acompanhar novos editais mensalmente.', link: 'https://processoseletivo.igesdf.org.br' },
+            'SES_DF': { titulo: 'SES-DF', status: 'Secretaria de Saúde do DF. Previsão de concurso.', historico: 'Sem edital publicado até o momento.' },
+            'DER_DF': { titulo: 'DER-DF', status: 'Concurso autorizado desde 2023, parado.', historico: 'TCDF cobra explicações do órgão.' },
+            'CGU': { titulo: 'CGU', status: 'Pedido de 470 vagas para Auditor.', historico: 'Aguardando Aval do MGI.' },
+            'ANAC': { titulo: 'ANAC', status: 'Pedido para 332 vagas de Especialista.', historico: 'Autorização esperada no pacote MGI.' },
+            'ANTT': { titulo: 'ANTT', status: 'Pedido de 170+ vagas para Brasília.', historico: 'Autorização esperada no pacote MGI.' },
+            'PRF_ADM': { titulo: 'PRF (Administrativo)', status: 'Pedido para 248 vagas administrativas.', historico: 'Reavaliação orçamentária para 2027.' },
+            'IBRAM_DF': { titulo: 'IBRAM-DF', status: 'Previsão de concurso para Analista Ambiental.', historico: 'Comissão aguardada para 2027.' },
+            'SISTEMA_S': { titulo: 'Sistema S (SEBRAE, IGES)', status: 'Seleções contínuas regidas pela CLT.', historico: 'Novos editais regionais a partir de Setembro/2026.' }
         };
+
+        const dadosAutomaticos = {};
+        const dadosAuditoria = { ...dadosManuais, ...dadosAutomaticos };
 
         function abrirModal(chave) {
             const item = dadosAuditoria[chave];
@@ -592,7 +616,7 @@
             if (item.link) {
                 linkEl.href = item.link;
                 linkEl.classList.remove('hidden');
-                linkEl.innerText = item.link_generico ? '🔗 Página institucional do órgão (edital ainda não publicado)' : '🔗 Ver Fonte / Banca Oficial';
+                linkEl.innerText = '🔗 Ver Fonte / Banca Oficial';
             } else {
                 linkEl.classList.add('hidden');
             }
@@ -606,10 +630,10 @@
         function setFiltroPerfil(perfil) {
             filtroPerfilAtual = perfil;
             document.querySelectorAll('.btn-perfil').forEach(btn => {
-                btn.className = "btn-perfil px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all";
+                btn.className = "btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all";
             });
             const ativos = { 'TODOS': 'btnPerfTODOS', 'a': 'btnPerfA', 'c': 'btnPerfC' };
-            document.getElementById(ativos[perfil]).className = "btn-perfil px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-900 text-white transition-all";
+            document.getElementById(ativos[perfil]).className = "btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-900 dark:bg-blue-600 text-white transition-all";
             filtrarTabelas();
         }
 

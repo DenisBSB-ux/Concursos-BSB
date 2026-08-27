@@ -1,0 +1,37 @@
+name: Robô de Concursos
+
+on:
+  schedule:
+    # Roda todos os dias às 08:00 (horário UTC, equivalente às 05:00 no Brasil)
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Permite que você aperte um botão para rodar manualmente
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar-painel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar os arquivos do repositório
+        uses: actions/checkout@v3
+        
+      - name: Preparar o Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Instalar ferramentas
+        run: pip install requests beautifulsoup4
+        
+      - name: Rodar o Robô
+        run: python scraper.py
+        
+      - name: Salvar e publicar as alterações
+        run: |
+          git config --global user.name 'Robô de Atualização'
+          git config --global user.email 'robo@github.com'
+          git add index.html
+          # Só faz o commit se houver alguma mudança real no index.html
+          git diff --quiet && git diff --staged --quiet || git commit -m "Atualização diária automática dos concursos"
+          git push

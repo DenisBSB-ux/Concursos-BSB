@@ -3952,7 +3952,7 @@ function extractGabarito(blockText, resolucaoText){
 }
 
 function detectaFormatoGemini(content){
-  return /QUEST[ÃA]O\s+\d+\s*\[Tend[êe]ncia/i.test(content) || /Probabilidade Preditiva/i.test(content);
+  return /QUEST[ÃA]O\s+\d+[^\n\[]{0,60}\[Tend[êe]ncia/i.test(content) || /Probabilidade Preditiva/i.test(content);
 }
 // formato Markdown gerado pelo próprio botão de download da plataforma — usa
 // cabeçalho "# QUESTÃO N" (com #), diferente dos outros dois formatos que nunca
@@ -4001,8 +4001,11 @@ function parseTxtQuestoesFormatoGemini(content){
 
   // localiza a posição de início de cada bloco "QUESTÃO N [...]" no texto
   // ORIGINAL (não depois de já ter cortado em pedaços), pra poder casar cada
-  // questão com o tema vigente naquele ponto específico do texto
-  const iniciosBloco = [...content.matchAll(/QUEST[ÃA]O\s+\d+\s*\[/gi)].map(m => m.index);
+  // questão com o tema vigente naquele ponto específico do texto.
+  // Tolerante a texto decorativo entre o número e o colchete (ex.: marcador
+  // "🟥🟨 INÉDITA 🟨🟥") — sem isso, questões inéditas eram engolidas pela
+  // questão anterior por não baterem com \s*\[ (só espaço em branco).
+  const iniciosBloco = [...content.matchAll(/QUEST[ÃA]O\s+\d+[^\n\[]{0,60}\[/gi)].map(m => m.index);
   const blocos = iniciosBloco.map((pos, i) => ({
     pos,
     texto: content.slice(pos, iniciosBloco[i+1] ?? content.length),

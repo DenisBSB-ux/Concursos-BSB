@@ -55,28 +55,28 @@
             <div class="bg-white dark:bg-slate-900 p-2.5 px-3 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
                 <div>
                     <div class="text-[10px] font-bold text-slate-400 uppercase">Total Monitorado</div>
-                    <div class="text-xl font-black text-slate-900 dark:text-white" id="kpiTotal">21</div>
+                    <div class="text-xl font-black text-slate-900 dark:text-white" id="kpiTotal">0</div>
                 </div>
                 <span class="text-lg">📊</span>
             </div>
             <div class="bg-emerald-50/50 dark:bg-emerald-950/20 p-2.5 px-3 rounded-lg border border-emerald-200 dark:border-emerald-800/50 shadow-sm flex items-center justify-between">
                 <div>
                     <div class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase">Inscrições Abertas</div>
-                    <div class="text-xl font-black text-emerald-800 dark:text-emerald-300" id="kpiAbertos">1</div>
+                    <div class="text-xl font-black text-emerald-800 dark:text-emerald-300" id="kpiAbertos">0</div>
                 </div>
                 <span class="text-lg">📝</span>
             </div>
             <div class="bg-indigo-50/50 dark:bg-indigo-950/20 p-2.5 px-3 rounded-lg border border-indigo-200 dark:border-indigo-800/50 shadow-sm flex items-center justify-between">
                 <div>
                     <div class="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 uppercase">Em Andamento</div>
-                    <div class="text-xl font-black text-indigo-800 dark:text-indigo-300" id="kpiAndamento">1</div>
+                    <div class="text-xl font-black text-indigo-800 dark:text-indigo-300" id="kpiAndamento">0</div>
                 </div>
                 <span class="text-lg">⏳</span>
             </div>
             <div class="bg-amber-50/50 dark:bg-amber-950/20 p-2.5 px-3 rounded-lg border border-amber-200 dark:border-amber-800/50 shadow-sm flex items-center justify-between">
                 <div>
                     <div class="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase">Autorizados / <span class="text-red-600 dark:text-red-400 font-bold">Previsto</span>s</div>
-                    <div class="text-xl font-black text-amber-800 dark:text-amber-300" id="kpiFuturos">19</div>
+                    <div class="text-xl font-black text-amber-800 dark:text-amber-300" id="kpiFuturos">0</div>
                 </div>
                 <span class="text-lg">🎯</span>
             </div>
@@ -92,6 +92,7 @@
                     ✕
                 </button>
             </div>
+            
             <div class="flex items-center gap-1.5 shrink-0">
                 <span class="text-[10px] font-bold text-slate-400 uppercase mr-1">Perfil:</span>
                 <button onclick="setFiltroPerfil('TODOS')" id="btnPerfTODOS" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-900 dark:bg-blue-600 text-white transition-all">Todos</button>
@@ -104,14 +105,14 @@
         <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             <div class="px-3 py-2 bg-emerald-700 dark:bg-emerald-800 text-white flex justify-between items-center">
                 <h2 class="font-bold text-xs tracking-wide">1º ABERTOS — INSCRIÇÕES ABERTAS</h2>
-                <span id="badgeCountSec1" class="text-[10px] font-bold bg-emerald-900/80 px-2 py-0.5 rounded">1 item</span>
+                <span id="badgeCountSec1" class="text-[10px] font-bold bg-emerald-900/80 px-2 py-0.5 rounded">0 itens</span>
             </div>
             <div class="table-container">
                 <table class="w-full text-left border-collapse min-w-[900px]">
                     <thead>
                         <tr class="bg-slate-50 dark:bg-slate-800/60 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                             <th class="py-2 px-3 w-40">Órgão</th>
-                            <th class="py-2 px-3">Cargo</th>
+                            <th class="py-2 px-3">Cargo / Especialidade</th>
                             <th class="py-2 px-3 w-28">Vagas</th>
                             <th class="py-2 px-3 w-28">Remuneração</th>
                             <th class="py-2 px-3 w-64">Cronograma de Datas (Abertura / Encerramento / Prova)</th>
@@ -153,14 +154,14 @@
         <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             <div class="px-3 py-2 bg-indigo-700 dark:bg-indigo-800 text-white flex justify-between items-center">
                 <h2 class="font-bold text-xs tracking-wide">2º EM ANDAMENTO — INSCRIÇÕES ENCERRADAS (PROVAS/RESULTADOS)</h2>
-                <span id="badgeCountSec2" class="text-[10px] font-bold bg-indigo-900/80 px-2 py-0.5 rounded">1 item</span>
+                <span id="badgeCountSec2" class="text-[10px] font-bold bg-indigo-900/80 px-2 py-0.5 rounded">0 itens</span>
             </div>
             <div class="table-container">
                 <table class="w-full text-left border-collapse min-w-[900px]">
                     <thead>
                         <tr class="bg-slate-50 dark:bg-slate-800/60 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                             <th class="py-2 px-3 w-40">Órgão</th>
-                            <th class="py-2 px-3">Cargo</th>
+                            <th class="py-2 px-3">Cargo / Especialidade</th>
                             <th class="py-2 px-3 w-28">Vagas</th>
                             <th class="py-2 px-3 w-28">Remuneração</th>
                             <th class="py-2 px-3 w-64">Cronograma de Datas (Abertura / Encerramento / Prova)</th>
@@ -175,7 +176,7 @@
                                 <div class="text-[10px] text-slate-500 dark:text-slate-400">Sec. Desenvolv. Social DF</div>
                             </td>
                             <td class="py-2 px-3">
-                                <div class="font-semibold text-slate-900 dark:text-slate-200">EDAS / TDAS</div>
+                                <div class="font-semibold text-slate-900 dark:text-slate-200">EDAS / TDAS (Psicólogo, Assistente Social)</div>
                                 <div class="text-[10px] text-slate-400 mt-0.5">Simulados oficiais aplicados em Julho/2026</div>
                             </td>
                             <td class="py-2 px-3 font-bold">1.197 + CR <span class="block text-[9px] font-normal text-slate-400">Estatutário</span></td>
@@ -198,14 +199,14 @@
         <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             <div class="px-3 py-2 bg-blue-700 dark:bg-blue-800 text-white flex justify-between items-center">
                 <h2 class="font-bold text-xs tracking-wide">3º AUTORIZADOS — BANCA/COMISSÃO FORMADA OU AUTORIZADOS OFICIALMENTE</h2>
-                <span id="badgeCountSec3" class="text-[10px] font-bold bg-blue-900/80 px-2 py-0.5 rounded">10 itens</span>
+                <span id="badgeCountSec3" class="text-[10px] font-bold bg-blue-900/80 px-2 py-0.5 rounded">0 itens</span>
             </div>
             <div class="table-container">
                 <table class="w-full text-left border-collapse min-w-[900px]">
                     <thead>
                         <tr class="bg-slate-50 dark:bg-slate-800/60 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                             <th class="py-2 px-3 w-40">Órgão</th>
-                            <th class="py-2 px-3">Cargo</th>
+                            <th class="py-2 px-3">Cargo / Especialidade</th>
                             <th class="py-2 px-3 w-28">Vagas</th>
                             <th class="py-2 px-3 w-28">Remuneração</th>
                             <th class="py-2 px-3 w-64">Cronograma de Datas (Abertura / Encerramento / Prova)</th>
@@ -213,10 +214,28 @@
                         </tr>
                     </thead>
                     <tbody id="tblSec3" class="text-xs divide-y divide-slate-100 dark:divide-slate-800/60 font-medium text-slate-700 dark:text-slate-300">
+                        <!-- METRÔ-DF -->
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('METRO_DF')">
+                            <td class="py-2 px-3">
+                                <div class="font-bold text-slate-900 dark:text-white text-xs">Metrô-DF</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Cia do Metropolitano do DF</div>
+                            </td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Operacional, Técnico, Adm, Eng, TI, Saúde</td>
+                            <td class="py-2 px-3 font-bold">299 + CR</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">Até R$ 9.500,00</td>
+                            <td class="py-2 px-3">
+                                <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-amber-500 p-1.5 rounded space-y-0.5">
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Escolha Banca:</strong> <span class="text-red-600 dark:text-red-400 font-bold">Prev.</span> 2º Sem/2026</div>
+                                    <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> <span class="text-red-600 dark:text-red-400 font-bold">Prev.</span> Fim/2026</div>
+                                    <div><strong class="text-blue-600 dark:text-blue-400">Provas:</strong> <span class="text-red-600 dark:text-red-400 font-bold">Prev.</span> 1º Tri/2027</div>
+                                </div>
+                            </td>
+                            <td class="py-2 px-3 font-bold">A definir</td>
+                        </tr>
                         <!-- ANPD -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="c" onclick="abrirModal('ANPD')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">ANPD</div></td>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Especialista em Regulação</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Especialista em Regulação (TI / Direito)</td>
                             <td class="py-2 px-3 font-bold">50 imediatas</td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 17.726,42</td>
                             <td class="py-2 px-3">
@@ -276,7 +295,7 @@
                         <!-- PCDF -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('PCDF')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">PCDF</div></td>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Agente de Custódia</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Agente de Custódia (Policial)</td>
                             <td class="py-2 px-3 font-bold">50 + 100 CR</td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 13.794,41</td>
                             <td class="py-2 px-3">
@@ -291,7 +310,7 @@
                         <!-- SEDF -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SEDF')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">SEDF</div></td>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Gestor (PPGE)</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Gestor (PPGE) / Psicólogo / Pedagogo</td>
                             <td class="py-2 px-3 font-bold">471 + CR</td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 5.445,00</td>
                             <td class="py-2 px-3">
@@ -306,7 +325,7 @@
                         <!-- CFC -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('CFC')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">CFC</div></td>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Contador / Analista</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Contador / Analista Contábil</td>
                             <td class="py-2 px-3 font-bold">A definir</td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 10.000,00</td>
                             <td class="py-2 px-3">
@@ -336,7 +355,7 @@
                         <!-- AGSUS -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('AGSUS')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">AgSUS</div></td>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista / Auxiliar</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista Saúde (Psicologia, Fonoaudiologia, Med)</td>
                             <td class="py-2 px-3 font-bold">CR contínuo</td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">Até R$ 17.700</td>
                             <td class="py-2 px-3">
@@ -351,7 +370,7 @@
                         <!-- IGESDF -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('IGESDF')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">IGESDF</div></td>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Médico / Enfermeiro / Tec</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Médico, Enfermeiro, Psicólogo, Fonoaudiólogo</td>
                             <td class="py-2 px-3 font-bold">CR contínuo</td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">Até R$ 18.100</td>
                             <td class="py-2 px-3">
@@ -372,14 +391,14 @@
         <section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             <div class="px-3 py-2 bg-amber-600 dark:bg-amber-800 text-white flex justify-between items-center">
                 <h2 class="font-bold text-xs tracking-wide">4º PREVISTOS — SOLICITADOS / ESTUDOS EM ANDAMENTO</h2>
-                <span id="badgeCountSec4" class="text-[10px] font-bold bg-amber-900/80 px-2 py-0.5 rounded">9 itens</span>
+                <span id="badgeCountSec4" class="text-[10px] font-bold bg-amber-900/80 px-2 py-0.5 rounded">0 itens</span>
             </div>
             <div class="table-container">
                 <table class="w-full text-left border-collapse min-w-[900px]">
                     <thead>
                         <tr class="bg-slate-50 dark:bg-slate-800/60 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                             <th class="py-2 px-3 w-40">Órgão</th>
-                            <th class="py-2 px-3">Cargo</th>
+                            <th class="py-2 px-3">Cargo / Especialidade</th>
                             <th class="py-2 px-3 w-28">Pedido</th>
                             <th class="py-2 px-3 w-28">Remuneração</th>
                             <th class="py-2 px-3 w-64">Cronograma de Datas (Abertura / Encerramento / Prova)</th>
@@ -390,7 +409,7 @@
                         <!-- RECEITA -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('RECEITA')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">Receita Federal</div></td>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Auditor / Analista</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Auditor / Analista Fiscal</td>
                             <td class="py-2 px-3 font-bold">146 vagas</td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 21.000,00</td>
                             <td class="py-2 px-3">
@@ -449,7 +468,7 @@
                         </tr>
                         <!-- PRF ADM -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('PRF_ADM')">
-                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">PRF (Sede/DF)</div></td>
+                            <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">PRF (Sede/Nacional)</div></td>
                             <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Agente Administrativo</td>
                             <td class="py-2 px-3 font-bold">248 vagas</td>
                             <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 6.000,00</td>
@@ -462,7 +481,7 @@
                             </td>
                             <td class="py-2 px-3 font-bold">-</td>
                         </tr>
-                        <!-- IBRAM -->
+                        <!-- IBRAM-DF -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('IBRAM_DF')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">IBRAM-DF</div></td>
                             <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Analista Ambiental</td>
@@ -495,9 +514,9 @@
                         <!-- SES-DF -->
                         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors" data-perfil="a" onclick="abrirModal('SES_DF')">
                             <td class="py-2 px-3"><div class="font-bold text-slate-900 dark:text-white text-xs">SES-DF</div></td>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Diversos (Saúde)</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-slate-200">Psicólogo, Fonoaudiólogo, Médico, Enfermeiro</td>
                             <td class="py-2 px-3 font-bold">322 + 2.057 CR</td>
-                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">A definir</td>
+                            <td class="py-2 px-3 font-bold text-emerald-600 dark:text-emerald-400">R$ 4.500 a R$ 18.000</td>
                             <td class="py-2 px-3">
                                 <div class="badge-date-box bg-slate-100 dark:bg-slate-800/60 border-l-2 border-slate-400 p-1.5 rounded space-y-0.5">
                                     <div><strong class="text-slate-600 dark:text-slate-300">Abertura Edital:</strong> <span class="text-red-600 dark:text-red-400 font-bold">Previsto</span> sem data</div>
@@ -554,7 +573,6 @@
                     </div>
                     <div id="modalSimulados" class="text-xs bg-slate-50 dark:bg-slate-800/90 p-3 rounded-xl border border-amber-300 dark:border-amber-700/50 text-slate-800 dark:text-slate-200 space-y-2"></div>
                 </div>
-                </div>
             </div>
             <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
                 <a id="modalLink" href="#" target="_blank" rel="noopener" class="px-3.5 py-2 bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold text-xs rounded-lg transition-all">
@@ -568,7 +586,6 @@
     </div>
 
     <script>
-        // MODO CLARO / ESCURO
         function toggleDarkMode() {
             const html = document.documentElement;
             const isDark = html.classList.toggle('dark');
@@ -577,7 +594,6 @@
             document.getElementById('themeText').innerText = isDark ? 'Claro' : 'Escuro';
         }
 
-        // Carrega tema salvo
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
             document.getElementById('themeIcon').innerText = '☀️';
@@ -588,7 +604,6 @@
             document.getElementById('themeText').innerText = 'Escuro';
         }
 
-        // Data Dinâmica
         function atualizarDataInterface() {
             const agora = new Date();
             const opcoesData = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -601,55 +616,49 @@
         let filtroPerfilAtual = 'TODOS';
 
         const dadosManuais = {
-            'TCDF': { titulo: 'TCDF 2026', status: 'Edital nº 1/2026 publicado para Analista Administrativo de Controle Externo.', historico: 'Inscrições: 26/08 a 17/09/2026. Aplicação das Provas em 22/11/2026.', link: 'https://www.cebraspe.org.br/concursos/tc_df_26_analista', simulados: '• <span class="font-bold text-slate-900 dark:text-white">Gran Concursos:</span> 1º Simulado TCDF (Analista) — PDF + Gabarito [Gratuito] (<a href="https://concursos.grancursosonline.com.br/tcdf-1o-simulado-analista-administrativo-de-controle-externo-area-de-gestao-servicos-tecnico-administrativos-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar PDF Grátis</a>)<br>• <span class="font-bold text-slate-900 dark:text-white">Estratégia Concursos:</span> Simulado Especial TCDF Cebraspe [Gratuito] (<a href="https://www.estrategiaconcursos.com.br/curso/tcdf-analista-administrativo-de-controle-externo-servicos-tecnico-administrativos-anace-rodadas-avancadas-de-simulados-2026-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Acessar Simulado Grátis</a>)<br>• <span class="font-bold text-slate-900 dark:text-white">JC Concursos:</span> Bateria de Questões Cebraspe TCDF [Gratuito] (<a href="https://jcconcursos.com.br/simulados/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Treinar Grátis</a>)' },
-            'SEDES_DF': { titulo: 'SEDES-DF', status: 'Concurso unificado para EDAS e TDAS (14 especialidades). Inscrições já encerradas.', historico: 'Realização das Provas Objetivas em 06/09/2026.', link: 'https://www.quadrix.org.br/', simulados: '• <span class="font-bold text-slate-900 dark:text-white">Gran Concursos:</span> Simulados Oficiais Aplicados em Julho/2026 — PDF + Gabarito [Gratuito] (<a href="https://concursos.grancursosonline.com.br/sedes-df-3-simulado-gratuito-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar Cadernos de Julho</a>)<br>• <span class="font-bold text-slate-900 dark:text-white">Estratégia Concursos:</span> Rodadas de Simulados Aplicadas em Julho/2026 [Gratuito] (<a href="https://www.estrategiaconcursos.com.br/blog/simulado-especial-concurso-sedes-df-2026/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar PDF Grátis</a>)' },
+            'METRO_DF': { titulo: 'Metrô-DF', status: 'Concurso determinado pelo TCDF com trâmites para escolha de banca organizadora.', historico: 'Previsão de 299 vagas imediatas + CR. Escolha da banca e edital em andamento.', link: 'https://www.metro.df.gov.br/' },
+            'TCDF': { titulo: 'TCDF 2026', status: 'Edital nº 1/2026 publicado para Analista Administrativo de Controle Externo.', historico: 'Inscrições: 26/08 a 17/09/2026. Aplicação das Provas em 22/11/2026.', link: 'https://www.cebraspe.org.br/concursos/tc_df_26_analista', simulados: '• <span class="font-bold text-slate-900 dark:text-white">Gran Concursos:</span> 1º Simulado TCDF (Analista) — PDF + Gabarito [Gratuito] (<a href="https://concursos.grancursosonline.com.br/tcdf-1o-simulado-analista-administrativo-de-controle-externo-area-de-gestao-servicos-tecnico-administrativos-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar PDF Grátis</a>)<br>• <span class="font-bold text-slate-900 dark:text-white">Estratégia Concursos:</span> Simulado Especial TCDF Cebraspe [Gratuito] (<a href="https://www.estrategiaconcursos.com.br/curso/tcdf-analista-administrativo-de-controle-externo-servicos-tecnico-administrativos-anace-rodadas-avancadas-de-simulados-2026-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Acessar Simulado Grátis</a>)' },
+            'SEDES_DF': { titulo: 'SEDES-DF', status: 'Concurso unificado para EDAS e TDAS (Psicologia, Serviço Social, etc). Inscrições encerradas.', historico: 'Realização das Provas Objetivas em 06/09/2026.', link: 'https://www.quadrix.org.br/', simulados: '• <span class="font-bold text-slate-900 dark:text-white">Gran Concursos:</span> Simulados Oficiais Aplicados em Julho/2026 — PDF + Gabarito [Gratuito] (<a href="https://concursos.grancursosonline.com.br/sedes-df-3-simulado-gratuito-pos-edital/" target="_blank" class="text-blue-600 dark:text-blue-400 font-bold underline">Baixar Cadernos de Julho</a>)' },
             'ANPD': { titulo: 'ANPD', status: 'Concurso autorizado (Portaria MGI nº 5.092) para 50 vagas de Especialista em Regulação.', historico: 'Edital aguardado para o fim de 2026.', link: 'https://www.gov.br/' },
             'COFEN_TI': { titulo: 'COFEN — TI', status: 'Vagas para Analista de TI e Suporte Técnico na Sede.', historico: 'Edital previsto até 15/09/2026.', link: 'https://www.cofen.gov.br/' },
             'COFEN_GERAL': { titulo: 'COFEN — Geral', status: 'Cargos de Analista Técnico e Gestão de Pessoas.', historico: 'Edital previsto até 15/09/2026.', link: 'https://www.cofen.gov.br/' },
             'SEEC_DF': { titulo: 'SEEC-DF', status: 'Carreira de Planejamento e Infraestrutura do DF.', historico: 'Lançamento do edital esperado para Outubro/2026.' },
             'PCDF': { titulo: 'PCDF — Agente de Custódia', status: 'Autorização para 50 vagas imediatas + 100 CR.', historico: 'Assinatura do contrato com a banca prevista para Set/2026.' },
-            'SEDF': { titulo: 'SEDF — PPGE', status: 'Gestor e Analista em Políticas Públicas.', historico: 'Definição de banca em Outubro/2026.' },
-            'CFC': { titulo: 'CFC', status: 'Concurso de Contador, Procurador e Analista.', historico: 'Edital aguardado para Novembro/2026.' },
+            'SEDF': { titulo: 'SEDF — PPGE', status: 'Gestor, Analista, Psicólogo e Pedagogo em Políticas Públicas.', historico: 'Definição de banca em Outubro/2026.' },
+            'CFC': { titulo: 'CFC', status: 'Concurso de Contador e Analista Contábil.', historico: 'Edital aguardado para Novembro/2026.' },
             'RECEITA': { titulo: 'Receita Federal', status: 'Pedido para 146 vagas (Auditor/Analista) no DF.', historico: 'Aguardando portaria MGI em Nov/2026.' },
             'SEFAZ_DF': { titulo: 'SEFAZ-DF', status: 'Auditor Fiscal. Banca Cebraspe contratada.', historico: 'Minuta do edital em ajustes.' },
-            'AGSUS': { titulo: 'AgSUS', status: 'Processos seletivos contínuos para cadastro de reserva.', historico: 'Editais frequentes por unidade/DSEI.', link: 'https://agsus.empregare.com/pt-br/editais' },
-            'IGESDF': { titulo: 'IGESDF', status: 'Processos seletivos contínuos para a saúde.', historico: 'Acompanhar novos editais mensalmente.', link: 'https://processoseletivo.igesdf.org.br' },
-            'SES_DF': { titulo: 'SES-DF', status: 'Secretaria de Saúde do DF. Previsão de concurso.', historico: 'Sem edital publicado até o momento.' },
+            'AGSUS': { titulo: 'AgSUS', status: 'Processos seletivos contínuos para área da Saúde (Psicologia, Fono, Med).', historico: 'Editais frequentes por unidade/DSEI.', link: 'https://agsus.empregare.com/pt-br/editais' },
+            'IGESDF': { titulo: 'IGESDF', status: 'Processos seletivos contínuos para área da Saúde (Psicologia, Fono, Enfermagem, Med).', historico: 'Acompanhar novos editais mensalmente.', link: 'https://processoseletivo.igesdf.org.br' },
+            'SES_DF': { titulo: 'SES-DF', status: 'Secretaria de Saúde do DF (Médico, Fonoaudiólogo, Psicólogo).', historico: 'Sem edital publicado até o momento.' },
             'DER_DF': { titulo: 'DER-DF', status: 'Concurso autorizado desde 2023, parado.', historico: 'TCDF cobra explicações do órgão.' },
             'CGU': { titulo: 'CGU', status: 'Pedido de 470 vagas para Auditor.', historico: 'Aguardando Aval do MGI.' },
             'ANAC': { titulo: 'ANAC', status: 'Pedido para 332 vagas de Especialista.', historico: 'Autorização esperada no pacote MGI.' },
             'ANTT': { titulo: 'ANTT', status: 'Pedido de 170+ vagas para Brasília.', historico: 'Autorização esperada no pacote MGI.' },
             'PRF_ADM': { titulo: 'PRF (Administrativo)', status: 'Pedido para 248 vagas administrativas.', historico: 'Reavaliação orçamentária para 2027.' },
             'IBRAM_DF': { titulo: 'IBRAM-DF', status: 'Previsão de concurso para Analista Ambiental.', historico: 'Comissão aguardada para 2027.' },
-            'SISTEMA_S': { titulo: 'Sistema S (SEBRAE, IGES)', status: 'Seleções contínuas regidas pela CLT.', historico: 'Novos editais regionais a partir de Setembro/2026.' }
+            'SISTEMA_S': { titulo: 'Sistema S', status: 'Seleções contínuas regidas pela CLT.', historico: 'Novos editais regionais a partir de Setembro/2026.' }
         };
 
         const dadosAutomaticos = {};
         const dadosAuditoria = { ...dadosManuais, ...dadosAutomaticos };
 
-
-        // =========================================================================
-        // PROTOCOLO DE VALIDAÇÃO RÍGIDA DE DADOS (ERRO ZERO)
-        // =========================================================================
         function validarIntegridade(chave, item) {
-            // Regra 5: Validação Lógica de Sanidade Temporal (Abertura <= Encerramento < Prova)
             const extrairData = (texto) => {
                 const match = texto.match(/(\d{2})\/(\d{2})\/(\d{4})/);
                 if (match) return new Date(match[3], match[2] - 1, match[1]);
                 return null;
             };
 
-            // Regra 4: Âncora de Verificabilidade (Link Obrigatório para certames Abertos ou Em Andamento)
             const row = document.querySelector(`tr[onclick="abrirModal('${chave}')"]`);
             if (row) {
                 const sectionId = row.closest('tbody').id;
                 if ((sectionId === 'tblSec1' || sectionId === 'tblSec2') && (!item.link || item.link.trim() === '')) {
-                    console.warn(`[BLOQUEIO DE INTEGRIDADE] ${item.titulo}: Faltando Link Oficial (Regra 4).`);
-                    row.style.display = 'none'; // Bloqueia a exibição na tabela
+                    console.warn(`[BLOQUEIO DE INTEGRIDADE] ${item.titulo}: Faltando Link Oficial`);
+                    row.style.display = 'none';
                     return false;
                 }
                 
-                // Aplicando verificação temporal básica se encontrar datas na string "historico"
                 const datas = [...item.historico.matchAll(/(\d{2})\/(\d{2})\/(\d{4})/g)].map(m => new Date(m[3], m[2]-1, m[1]));
                 if (datas.length >= 2) {
                     if (datas[0] > datas[1]) {
@@ -666,7 +675,7 @@
                 validarIntegridade(chave, dadosAuditoria[chave]);
             });
         }
-        // Executa a validação logo após o carregamento inicial das tabelas
+
         setTimeout(aplicarValidacaoRigorosa, 500);
 
         function abrirModal(chave) {
@@ -675,7 +684,7 @@
             document.getElementById('modalTitle').innerText = item.titulo;
             document.getElementById('modalStatusText').innerText = item.status;
             document.getElementById('modalHistorico').innerHTML = `⏳ ${item.historico}`;
-            
+
             const simEl = document.getElementById('modalSimulados');
             const simContainer = document.getElementById('modalSimuladosContainer');
             if (item.simulados) {
@@ -706,7 +715,9 @@
                 btn.className = "btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all";
             });
             const ativos = { 'TODOS': 'btnPerfTODOS', 'a': 'btnPerfA', 'c': 'btnPerfC' };
-            document.getElementById(ativos[perfil]).className = "btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-900 dark:bg-blue-600 text-white transition-all";
+            if (ativos[perfil]) {
+                document.getElementById(ativos[perfil]).className = "btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-900 dark:bg-blue-600 text-white transition-all";
+            }
             filtrarTabelas();
         }
 
@@ -723,9 +734,8 @@
             linhas.forEach(linha => {
                 const exibe = (query === '' || linha.innerText.toLowerCase().includes(query)) && 
                               (filtroPerfilAtual === 'TODOS' || linha.getAttribute('data-perfil') === filtroPerfilAtual);
-                
                 linha.style.display = exibe ? '' : 'none';
-                
+
                 if (exibe) {
                     const id = linha.closest('tbody').id;
                     if (id === 'tblSec1') v1++;
@@ -739,7 +749,7 @@
             document.getElementById('badgeCountSec2').innerText = `${v2} item(ns)`;
             document.getElementById('badgeCountSec3').innerText = `${v3} item(ns)`;
             document.getElementById('badgeCountSec4').innerText = `${v4} item(ns)`;
-            
+
             document.getElementById('kpiTotal').innerText = v1 + v2 + v3 + v4;
             document.getElementById('kpiAbertos').innerText = v1;
             document.getElementById('kpiAndamento').innerText = v2;
@@ -747,14 +757,9 @@
         }
 
         window.onclick = e => { if (e.target === document.getElementById('modal')) fecharModal(); };
-        
-        // =========================================================================
-        // VERIFICADOR AUTOMÁTICO DE SIMULADOS E PROVAS JÁ APLICADAS
-        // =========================================================================
+
         function verificarDatasAplicadas() {
             const agora = new Date();
-            
-            // Verifica Badges de Simulados com data programada
             document.querySelectorAll('[data-simulado-data]').forEach(badge => {
                 const dataStr = badge.getAttribute('data-simulado-data');
                 const dataEvento = new Date(dataStr);
@@ -765,9 +770,9 @@
                 }
             });
         }
-        
-        // Executa ao carregar a página
+
         verificarDatasAplicadas();
+        filtrarTabelas();
 
         window.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
     </script>

@@ -6,6 +6,178 @@
     <meta http-equiv="refresh" content="600">
     <title>Monitor de Concursos Públicos — Brasília/DF</title>
     <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 min-h-screen transition-colors">
+
+    <!-- CABEÇALHO -->
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <h1 class="text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                    📋 Monitor de Concursos Públicos
+                </h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                    Brasília / DF — atualizado em <span id="dataAtualizacao">—</span>
+                </p>
+            </div>
+            <button onclick="toggleDarkMode()" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-md bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Escuro</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6">
+
+        <!-- KPIs -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3">
+                <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Total monitorado</p>
+                <p id="kpiTotal" class="text-2xl font-black text-slate-900 dark:text-white">0</p>
+            </div>
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3">
+                <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Inscrições abertas</p>
+                <p id="kpiAbertos" class="text-2xl font-black text-emerald-600 dark:text-emerald-400">0</p>
+            </div>
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3">
+                <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Em andamento</p>
+                <p id="kpiAndamento" class="text-2xl font-black text-blue-600 dark:text-blue-400">0</p>
+            </div>
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3">
+                <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Autorizados / previstos</p>
+                <p id="kpiFuturos" class="text-2xl font-black text-amber-600 dark:text-amber-400">0</p>
+            </div>
+        </section>
+
+        <!-- BUSCA E FILTROS -->
+        <section class="flex flex-wrap items-center gap-2 mb-6">
+            <div class="relative flex-1 min-w-[200px]">
+                <input id="searchInput" type="text" placeholder="Buscar órgão, cargo ou banca..."
+                    oninput="filtrarTabelas()"
+                    class="w-full px-3 py-2 text-sm rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="limparBusca()" class="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+                <button id="btnPerfTODOS" onclick="setFiltroPerfil('TODOS')" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-900 dark:bg-blue-600 text-white transition-all">Todos</button>
+                <button id="btnPerfA" onclick="setFiltroPerfil('a')" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Administrativo</button>
+                <button id="btnPerfC" onclick="setFiltroPerfil('c')" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Controle/Contábil</button>
+                <button id="btnPerfS" onclick="setFiltroPerfil('s')" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Saúde</button>
+                <button id="btnPerfF" onclick="setFiltroPerfil('f')" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Fiscal</button>
+                <button id="btnPerfP" onclick="setFiltroPerfil('p')" class="btn-perfil px-2.5 py-1 text-[11px] font-bold rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">Policial</button>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 1: ABERTOS -->
+        <section class="mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-sm font-black text-slate-900 dark:text-white">🟢 Inscrições abertas</h2>
+                <span id="badgeCountSec1" class="text-[11px] font-bold text-slate-500 dark:text-slate-400">0 item(ns)</span>
+            </div>
+            <div class="overflow-x-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 dark:bg-slate-800/50 text-[11px] uppercase text-slate-500 dark:text-slate-400">
+                        <tr><th class="text-left px-3 py-2">Órgão</th><th class="text-left px-3 py-2">Situação</th><th class="px-3 py-2"></th></tr>
+                    </thead>
+                    <tbody id="tblSec1">
+                        <tr data-perfil="c"><td class="px-3 py-2 font-bold">TCDF 2026</td><td class="px-3 py-2">Inscrições até 17/09/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('TCDF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="s"><td class="px-3 py-2 font-bold">AgSUS</td><td class="px-3 py-2">Processos seletivos contínuos</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('AGSUS')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="s"><td class="px-3 py-2 font-bold">IGESDF</td><td class="px-3 py-2">Processos seletivos contínuos</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('IGESDF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 2: EM ANDAMENTO -->
+        <section class="mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-sm font-black text-slate-900 dark:text-white">🔵 Em andamento</h2>
+                <span id="badgeCountSec2" class="text-[11px] font-bold text-slate-500 dark:text-slate-400">0 item(ns)</span>
+            </div>
+            <div class="overflow-x-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 dark:bg-slate-800/50 text-[11px] uppercase text-slate-500 dark:text-slate-400">
+                        <tr><th class="text-left px-3 py-2">Órgão</th><th class="text-left px-3 py-2">Situação</th><th class="px-3 py-2"></th></tr>
+                    </thead>
+                    <tbody id="tblSec2">
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">Metrô-DF</td><td class="px-3 py-2">Escolha da banca em andamento</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('METRO_DF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">DATAPREV 2026</td><td class="px-3 py-2">Provas em 11/10/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('DATAPREV')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="s"><td class="px-3 py-2 font-bold">SEDES-DF</td><td class="px-3 py-2">Provas em 06/09/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('SEDES_DF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">COFEN — TI</td><td class="px-3 py-2">Edital previsto até 15/09/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('COFEN_TI')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">COFEN — Geral</td><td class="px-3 py-2">Edital previsto até 15/09/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('COFEN_GERAL')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="f"><td class="px-3 py-2 font-bold">SEFAZ-DF</td><td class="px-3 py-2">Banca contratada, minuta em ajuste</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('SEFAZ_DF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">DER-DF</td><td class="px-3 py-2">Autorizado desde 2023, parado</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('DER_DF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 3: AUTORIZADOS -->
+        <section class="mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-sm font-black text-slate-900 dark:text-white">🟡 Autorizados (edital pendente)</h2>
+                <span id="badgeCountSec3" class="text-[11px] font-bold text-slate-500 dark:text-slate-400">0 item(ns)</span>
+            </div>
+            <div class="overflow-x-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 dark:bg-slate-800/50 text-[11px] uppercase text-slate-500 dark:text-slate-400">
+                        <tr><th class="text-left px-3 py-2">Órgão</th><th class="text-left px-3 py-2">Situação</th><th class="px-3 py-2"></th></tr>
+                    </thead>
+                    <tbody id="tblSec3">
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">ANPD</td><td class="px-3 py-2">50 vagas autorizadas, edital até fim de 2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('ANPD')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="p"><td class="px-3 py-2 font-bold">PCDF — Agente de Custódia</td><td class="px-3 py-2">Contrato com banca previsto Set/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('PCDF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">SEDF — PPGE</td><td class="px-3 py-2">Definição de banca em Out/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('SEDF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="c"><td class="px-3 py-2 font-bold">CFC</td><td class="px-3 py-2">Edital aguardado para Nov/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('CFC')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="f"><td class="px-3 py-2 font-bold">Receita Federal</td><td class="px-3 py-2">Aguardando portaria MGI, Nov/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('RECEITA')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="c"><td class="px-3 py-2 font-bold">CGU</td><td class="px-3 py-2">470 vagas pedidas, aguardando MGI</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('CGU')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">ANAC</td><td class="px-3 py-2">332 vagas pedidas, aguardando MGI</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('ANAC')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">ANTT</td><td class="px-3 py-2">170+ vagas pedidas, aguardando MGI</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('ANTT')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="p"><td class="px-3 py-2 font-bold">PRF (Administrativo)</td><td class="px-3 py-2">Reavaliação orçamentária para 2027</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('PRF_ADM')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SEÇÃO 4: PREVISTOS / SEM PRAZO -->
+        <section class="mb-6">
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-sm font-black text-slate-900 dark:text-white">⚪ Previstos / sem prazo definido</h2>
+                <span id="badgeCountSec4" class="text-[11px] font-bold text-slate-500 dark:text-slate-400">0 item(ns)</span>
+            </div>
+            <div class="overflow-x-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 dark:bg-slate-800/50 text-[11px] uppercase text-slate-500 dark:text-slate-400">
+                        <tr><th class="text-left px-3 py-2">Órgão</th><th class="text-left px-3 py-2">Situação</th><th class="px-3 py-2"></th></tr>
+                    </thead>
+                    <tbody id="tblSec4">
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">SEEC-DF</td><td class="px-3 py-2">Lançamento esperado Out/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('SEEC_DF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="s"><td class="px-3 py-2 font-bold">SES-DF</td><td class="px-3 py-2">Sem edital publicado</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('SES_DF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">IBRAM-DF</td><td class="px-3 py-2">Comissão aguardada para 2027</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('IBRAM_DF')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                        <tr data-perfil="a"><td class="px-3 py-2 font-bold">Sistema S</td><td class="px-3 py-2">Novos editais regionais a partir de Set/2026</td><td class="px-3 py-2 text-right"><button onclick="abrirModal('SISTEMA_S')" class="text-blue-600 dark:text-blue-400 font-bold text-xs">Ver mais →</button></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <p class="text-[11px] text-slate-400 dark:text-slate-500 text-center pt-2">
+            Dados mantidos manualmente. A data acima reflete o carregamento da página, não uma nova verificação das fontes oficiais.
+        </p>
+    </main>
+
+    <!-- MODAL -->
+    <div id="modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-slate-900 rounded-lg max-w-md w-full p-5 relative">
+            <button onclick="fecharModal()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">✕</button>
+            <h3 id="modalTitle" class="text-lg font-black text-slate-900 dark:text-white mb-2"></h3>
+            <p id="modalStatusText" class="text-sm text-slate-700 dark:text-slate-300 mb-2"></p>
+            <p id="modalHistorico" class="text-sm text-slate-500 dark:text-slate-400 mb-3"></p>
+            <div id="modalSimuladosContainer" class="hidden mb-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-md text-xs leading-relaxed">
+                <p class="font-bold text-slate-700 dark:text-slate-300 mb-1">📝 Simulados disponíveis</p>
+                <div id="modalSimulados"></div>
+            </div>
+            <a id="modalLink" href="#" target="_blank" class="hidden text-sm font-bold text-blue-600 dark:text-blue-400 underline"></a>
+        </div>
+    </div>
+
     <script>
         // MODO CLARO / ESCURO
         function toggleDarkMode() {

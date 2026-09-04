@@ -12,18 +12,26 @@
             const html = document.documentElement;
             const isDark = html.classList.toggle('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
-            document.getElementById('themeText').innerText = isDark ? 'Claro' : 'Escuro';
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            if (icon) icon.innerText = isDark ? '☀️' : '🌙';
+            if (text) text.innerText = isDark ? 'Claro' : 'Escuro';
         }
 
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            document.getElementById('themeIcon').innerText = '☀️';
-            document.getElementById('themeText').innerText = 'Claro';
-        } else {
-            document.documentElement.classList.remove('dark');
-            document.getElementById('themeIcon').innerText = '🌙';
-            document.getElementById('themeText').innerText = 'Escuro';
+        function initTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                const icon = document.getElementById('themeIcon');
+                const text = document.getElementById('themeText');
+                if (icon) icon.innerText = '☀️';
+                if (text) text.innerText = 'Claro';
+            } else {
+                document.documentElement.classList.remove('dark');
+                const icon = document.getElementById('themeIcon');
+                const text = document.getElementById('themeText');
+                if (icon) icon.innerText = '🌙';
+                if (text) text.innerText = 'Escuro';
+            }
         }
 
         // Data Dinâmica
@@ -34,8 +42,6 @@
             const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             document.getElementById('dataAtualizacao').innerText = `${dataFormatada} às ${horaFormatada}`;
         }
-        atualizarDataInterface();
-
         let filtroPerfilAtual = 'TODOS';
 
         const dadosManuais = {
@@ -163,8 +169,20 @@
         }
 
         // Executa as rotinas iniciais
-        verificarDatasAplicadas();
-        filtrarTabelas();
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            atualizarDataInterface();
+            verificarDatasAplicadas();
+            filtrarTabelas();
+        });
+
+        // Caso o DOM já tenha carregado antes do script executar
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            initTheme();
+            atualizarDataInterface();
+            verificarDatasAplicadas();
+            filtrarTabelas();
+        }
 
         window.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
     </script>
